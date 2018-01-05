@@ -1,0 +1,5 @@
+export(cdfFMD,meanvarFMD,momentsFMD,meanvarTMD,momentsTMD)
+importFrom("matrixcalc","is.positive.definite")
+importFrom("mvtnorm","pmvt","pmvnorm","GenzBretz")
+importFrom("stats", "dnorm", "dt", "pnorm", "pt")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")
