@@ -29,20 +29,23 @@ meanvarTMD = function(lower = NULL,upper = NULL,mu,Sigma,dist = "normal",nu = NU
   if(dist == "t"){
     if(is.null(nu)){
       stop("Degrees of freedom 'nu' must be provided for the T case.")}else{
-        if(nu < 2){stop("The first moment exists only when the degree of freedom is larger than 2.")
-        }else{
-          if(nu >= 100){
-            warning("For degrees of freedom >= 100, Normal case is considered.",immediate. = TRUE)
-            out = meanvarN(a = lower,b = upper,mu = mu,Sigma = Sigma)
-          }else{
-            if(nu < 4){
-              warning("The theoretical second moment exists only when the degrees of freedom is larger than 3.",immediate. = TRUE)
-              out = meanvarT(a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
+        if(nu%%1!=0){
+          stop("Degrees of freedom 'nu' must be an integer greater than 2.")}else{
+            if(nu <= 2){stop("The first moment exists only when the degree of freedom is larger than 2.")
             }else{
-              out = meanvarT(a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
+              if(nu >= 100){
+                warning("For degrees of freedom >= 100, Normal case is considered.",immediate. = TRUE)
+                out = meanvarN(a = lower,b = upper,mu = mu,Sigma = Sigma)
+              }else{
+                if(nu < 4){
+                  warning("The theoretical second moment exists only when the degrees of freedom is larger than 3.",immediate. = TRUE)
+                  out = meanvarT(a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
+                }else{
+                  out = meanvarT(a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
+                }
+              }
             }
           }
-        }
       }
   }else{
     if(dist != "normal"){stop("The dist values are 'normal' and 't'.")}else{

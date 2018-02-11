@@ -1,5 +1,5 @@
-#require(matrixcalc)
-#require(mvtnorm)
+# require(matrixcalc)
+# require(mvtnorm)
 
 ####################################################################
 #AUXILIAR CODES T

@@ -17,8 +17,8 @@ momentsFMD = function(kappa,mu,Sigma,dist = "normal",nu = NULL)
 
   #validating distributions and nu parameter
   if(dist == "t"){
-    if(is.null(nu)){
-      stop("Degrees of freedom 'nu' must be provided for the T case.")}else{
+    if(is.null(nu) | nu%%1!=0){
+      stop("Degrees of freedom 'nu' must be a positive integer provided for the T case.")}else{
         if(!all(kappa == 0) & nu < max(3,sum(kappa)+2)){stop("The kappa-th moment exists only when the degree of freedom is greater than or equal to 'sum(kappa)+2'.")}
         if(nu >= 100){
           warning("For degrees of freedom >= 100, Normal case is considered.",immediate. = TRUE)

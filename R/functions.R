@@ -67,7 +67,7 @@ meanvarT = function(a,b,mu,Sigma,nu)
       F1 = mu*F0 + nnu*Sigma*(ta-tb)
       return(list(mean = round(F1/F0,4)))
     }
-    pb <- txtProgressBar(min = 1,max = 2^p,style = 3)
+    pb <- txtProgressBar(min = 1,max = p,style = 3)
     GB = GenzBretz(maxpts = p*1e4, abseps = 1e-6, releps = 0)
     #print(GB$maxpts)
     F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma, algorithm = GB)[1]
