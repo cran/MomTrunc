@@ -1,12 +1,11 @@
 #MEAN AND VARIANCE
 
-meanvarTMD = function(lower = NULL,upper = NULL,mu,Sigma,dist = "normal",nu = NULL)
+meanvarTMD = function(lower = NULL,upper = NULL,mu,Sigma,lambda = NULL, tau = NULL,dist,nu = NULL)
 {
   #Validating dims data set
   if(ncol(as.matrix(mu)) > 1 | !is.numeric(mu)) stop("mu must be numeric and have just one column")
 
   #validate mean an Sigma dimensions
-
   if(ncol(as.matrix(Sigma)) != length(c(mu)))stop("Unconformable dimensions between mu and Sigma")
   if(length(Sigma) == 1){
     if(c(Sigma)<=0)stop("Sigma (sigma^2 for p = 1) must be positive.")
@@ -26,47 +25,77 @@ meanvarTMD = function(lower = NULL,upper = NULL,mu,Sigma,dist = "normal",nu = NU
   if(all(lower < upper) == FALSE)stop("Lower bound must be lower than or equal to upper bound.")
 
   #validating distributions and nu parameter
-  if(dist == "t"){
-    if(is.null(nu)){
-      stop("Degrees of freedom 'nu' must be provided for the T case.")}else{
+  if(dist=="normal"){
+    out = meanvarN7(lower = lower,upper = upper,mu = mu,Sigma = Sigma)
+  }else{
+    if(dist == "t"){
+      if(is.null(nu)){
+        stop("Degrees of freedom 'nu' must be provided for the T case.")
+      }else{
         if(nu%%1!=0){
-          stop("Degrees of freedom 'nu' must be an integer greater than 2.")}else{
-            if(nu <= 2){stop("The first moment exists only when the degree of freedom is larger than 2.")
+          stop("Degrees of freedom 'nu' must be an integer greater than 2.")
+        }else{
+          if(nu <= 2){stop("Sorry, we can only compute the first moment for degrees of freedom larger than 2.")
+          }else{
+            if(nu >= 200){
+              warning("For degrees of freedom >= 200, Normal case is considered.",immediate. = TRUE)
+              out = meanvarN7(lower = lower,upper = upper,mu = mu,Sigma = Sigma)
             }else{
-              if(nu >= 100){
-                warning("For degrees of freedom >= 100, Normal case is considered.",immediate. = TRUE)
-                out = meanvarN(a = lower,b = upper,mu = mu,Sigma = Sigma)
+              if(nu < 4){
+                warning("Sorry, we can only compute the second moment when the degrees of freedom is larger than 3.",immediate. = TRUE)
+                out = meanvarT(a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
               }else{
-                if(nu < 4){
-                  warning("The theoretical second moment exists only when the degrees of freedom is larger than 3.",immediate. = TRUE)
-                  out = meanvarT(a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
-                }else{
-                  out = meanvarT(a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
-                }
+                out = meanvarT(a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
               }
             }
           }
+        }
       }
-  }else{
-    if(dist != "normal"){stop("The dist values are 'normal' and 't'.")}else{
-      if(!is.null(nu)){warning("Nu parameter not considered for normal case.",immediate. = TRUE)}
-      nu  = 100
-      out = meanvarN(a = lower,b = upper,mu = mu,Sigma = Sigma)
+    }else{
+      if(dist == "ESN" | dist == "SN"){
+        #Validating Lambda
+        if(is.null(lambda)){
+          #not provided by user
+          stop("Skewness parameter 'lambda' must be provided for the ESN/SN case.")
+        }else{
+          #validate input
+          if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
+          if(all(lambda==0)){
+            warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
+            out = meanvarN7(lower = lower,upper = upper,mu = mu,Sigma = Sigma)
+          }
+        }
+        if(dist=="SN"){
+          out = meanvarESN7(lower = lower,upper = upper,mu = mu,Sigma = Sigma,lambda = lambda,tau = 0)
+        }else{
+          if(is.null(tau)){
+            #not provided by user
+            stop("Extension parameter 'tau' must be provided for the ESN case.")
+          }else{
+            #validate input
+            if(!is.numeric(tau) | length(tau)>1)stop("Tau must be numeric real number.")
+            out = meanvarESN7(lower = lower,upper = upper,mu = mu,Sigma = Sigma,lambda = lambda,tau = tau)
+          }
+        }
+      }else{
+        stop("The dist values are 'normal', 't', 'SN' and 'ESN'.")
+      }
     }
   }
-  cat('\n')
-  call <- match.call()
-  cat("Call:\n")
-  print(call)
-  cat('\n')
-  cat("Mean:\n")
-  print(c(out$mean))
-  if(dist == "normal" | (dist == "t" & nu >= 4)){
-    cat('\n')
-    if(length(mu)==1){cat("Variance:\n")}else{cat("Varcov matrix:\n")}
-    print(out$varcov)
-    cat('\n')
-  }
+
+  # cat('\n')
+  # call <- match.call()
+  # cat("Call:\n")
+  # print(call)
+  # cat('\n')
+  # cat("Mean:\n")
+  # print(c(out$mean))
+  # if(dist == "normal" | (dist == "t" & nu >= 4)){
+  #   cat('\n')
+  #   if(length(mu)==1){cat("Variance:\n")}else{cat("Varcov matrix:\n")}
+  #   print(out$varcov)
+  #   cat('\n')
+  # }
   return(out)
 }
 

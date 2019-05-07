@@ -5,10 +5,10 @@
 Cumulative distribution function for folded multivariate distributions
 }
 \description{
-It computes the cumulative distribution function on \code{x} for a folded \code{p}-variate Normal and Student's t-distribution.
+It computes the cumulative distribution function on \code{x} for a folded \code{p}-variate Normal, Skew-normal (SN), Extended Skew-normal (ESN) and Student's t-distribution.
 }
 \usage{
-cdfFMD(x,mu,Sigma,dist = "normal",nu = NULL)
+cdfFMD(x,mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,6 +20,12 @@ a numeric vector of length \eqn{p} representing the location parameter.
 }
   \item{Sigma}{
 a numeric positive definite matrix with dimension \eqn{p}x\eqn{p} representing the scale parameter.
+}
+  \item{lambda}{
+a numeric vector of length \eqn{p} representing the skewness parameter for SN and ESN cases. If \code{lambda == 0}, the ESN/SN reduces to a normal (symmetric) distribution.
+}
+  \item{tau}{
+It represents the extension parameter for the ESN distribution. If \code{tau == 0}, the ESN reduces to a SN distribution.
 }
   \item{dist}{
 represents the folded distribution to be computed. The values are \code{normal} (by default) for the folded Normal distribution and \code{t} for the folded Student's t-distribution.
@@ -35,17 +41,20 @@ Normal case by default, i.e., when \code{dist} is not provided. Univariate case 
 It returns the distribution value for a single point \code{x}.
 }
 \references{
-Psarakis, S., & Panaretos, J. (2001). On some bivariate extensions of the folded normal and the folded-t distributions.
-
 Chakraborty, A. K., & Chatterjee, M. (2013). On multivariate folded normal distribution. Sankhya B, 75(1), 1-15.
+
+Kan R. & Robotti C. (2017) On Moments of Folded and Truncated Multivariate Normal Distributions, Journal of Computational and Graphical Statistics, 26:4, 930-934.
+
+C.E. Galarza, L.A. Matos, D.K. Dey & V.H. Lachos. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut.
 }
+
 \author{Christian E. Galarza <\email{cgalarza88@gmail.com}> and
 Victor H. Lachos <\email{hlachos@uconn.edu}>
 
 Maintainer: Christian E. Galarza <\email{cgalarza88@gmail.com}>
 }
 \note{
-Degree of freedom must be a positive integer. If \code{nu >= 100}, Normal case is considered."
+Degree of freedom must be a positive integer. If \code{nu >= 200}, Normal case is considered."
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
@@ -57,13 +66,16 @@ Degree of freedom must be a positive integer. If \code{nu >= 100}, Normal case i
 mu = c(0.1,0.2,0.3,0.4)
 Sigma = matrix(data = c(1,0.2,0.3,0.1,0.2,1,0.4,-0.1,0.3,0.4,1,0.2,0.1,-0.1,0.2,1),
                nrow = length(mu),ncol = length(mu),byrow = TRUE)
-nu = 4
-cdfFMD(x = c(0.5,0.2,1.0,1.3),mu,Sigma) #normal case
-cdfFMD(x = c(0.5,0.2,1.0,1.3),mu,Sigma,dist = "t",nu) #t case
+cdfFMD(x = c(0.5,0.2,1.0,1.3),mu,Sigma,dist="normal")
+cdfFMD(x = c(0.5,0.2,1.0,1.3),mu,Sigma,dist = "t",nu = 4)
+cdfFMD(x = c(0.5,0.2,1.0,1.3),mu,Sigma,lambda = c(-2,0,2,1),dist = "SN")
+cdfFMD(x = c(0.5,0.2,1.0,1.3),mu,Sigma,lambda = c(-2,0,2,1),tau = 1,dist = "ESN")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{Folded}% use one of  RShowDoc("KEYWORDS")
 \keyword{Multivariate}% __ONLY ONE__ keyword per line
 \keyword{Normal}
+\keyword{Skew}
+\keyword{Extended}
 \keyword{Student's t}
