@@ -4,6 +4,12 @@ meanvarFESNopt = function(mu,Sigma,lambda,tau)
   if(p==1){
     return(meanvarFESN_uni(mu,Sigma,lambda,tau))
   }
+  tautil = tau/sqrt(1+sum(lambda^2))
+  if(tautil < -35){
+    #print("normal aproximation")
+    Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
+    return(meanvarFN(mu - tautil*Delta,Sigma = Sigma - Delta%*%t(Delta)))
+  }
   muY  = matrix(data = NA,nrow = p,ncol = 1)
   EYY = matrix(data = NA,nrow = p,ncol = p)
   varY = matrix(data = NA,nrow = p,ncol = p)
@@ -32,7 +38,7 @@ meanvarFESNopt = function(mu,Sigma,lambda,tau)
     }
   }
   varY = EYY - muY%*%t(muY)
-  return(list(muY = round(muY,5),EYY = round(EYY,5),varY = round(varY,5)))
+  return(list(muY = muY,EYY = EYY,varY = varY))
 }
 
 
@@ -48,7 +54,7 @@ Exixj = function(mu,Sigma,lambda,tau)
   iGamma     = iSS%*%Phi%*%iSS
   varphi  = iSS%*%lambda            #ok
   mub        = tau*Gamma%*%varphi
-  eta = dnorm(tau,0,sqrt(1+sum(lambda^2)))/pnorm(tau,0,sqrt(1+sum(lambda^2)))
+  eta = invmills(tau,0,sqrt(1+sum(lambda^2)))
 
   delta  = eta*Sigma%*%varphi
   m = mu - mub

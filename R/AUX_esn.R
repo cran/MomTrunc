@@ -1,6 +1,40 @@
 #library(mnormt)
 #library(mvtnorm)
 
+select = function(a,b,mu,s){
+  a1 = (a-mu)/s
+  b1 = (b-mu)/s
+  if(a1<0 & b1<0){
+    val = b - exp(b/10)
+  }
+  if(a1>0 & b1>0){
+    val = a + exp(-a/10)
+  }
+  return(val)
+}
+
+#######################################################################################
+#######################################################################################
+
+pnorm2 = function(lower = -Inf,upper = Inf,mean = 0,sd = 1){
+  if(lower == -Inf){
+    return(pnorm(upper,mean = mean,sd = sd))
+  }else{
+    if(upper == Inf){
+      return(pnorm(lower,mean = mean,sd = sd,lower.tail = FALSE))
+    }else{
+      return(pnorm(upper,mean = mean,sd = sd) - pnorm(lower,mean = mean,sd = sd))
+    }
+  }
+}
+
+#######################################################################################
+#######################################################################################
+
+is.pd = function(MAT){
+  all(eigen(MAT)$values > 0)
+}
+
 #######################################################################################
 #######################################################################################
 
@@ -28,11 +62,17 @@ dmvESN1 <- function(y, mu=0, Sigma=1, lambda,tau){
   #Sigma: Matrix p x p
   n <- length(c(y))
   p <- 1
-  tautil<-tau/sqrt(1+sum(lambda^2))
+  s = sqrt(Sigma)
+  tautil = tau/sqrt(1+sum(lambda^2))
+  if(tautil< -35){
+    #print("normal aproximation")
+    Gamma  = Sigma/(1+lambda^2)
+    mub    = lambda*tau*Gamma/s
+    return(dnorm(y,mu-mub,sqrt(Gamma)))
+  }
   dens <- dnorm(x = c(y),mean = c(mu),sd = sqrt(Sigma))*
     pnorm(apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
-                  (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau)/
-    pnorm(tautil)
+                  (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau)/pnorm(tautil)
   return(dens)
 }
 
@@ -42,6 +82,12 @@ dmvESN1 <- function(y, mu=0, Sigma=1, lambda,tau){
 AcumESN<-function(y=c(1,1),mu=c(0,0),Sigma=diag(2),lambda=c(2,-1),tau=1){
   if(all(y == -Inf)){return(0)}
   if(all(y ==  Inf)){return(1)}
+  tautil<-tau/sqrt(1+sum(lambda^2))
+  if(tautil< -35){
+    #print("normal aproximation")
+    Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
+    return(pmvnorm(upper = y,mean = c(mu - tautil*Delta),sigma = Sigma - Delta%*%t(Delta))[1])
+  }
   y<-as.matrix(y)
   mu<-as.matrix(mu)
   lambda<-as.matrix(lambda)
@@ -57,24 +103,6 @@ AcumESN<-function(y=c(1,1),mu=c(0,0),Sigma=diag(2),lambda=c(2,-1),tau=1){
   return(resp[1])
 }
 
-#######################################################################################
-#######################################################################################
-
-pmvESN = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda)),mu = rep(0,length(lambda)),Sigma,lambda,tau){
-  tautil<-tau/sqrt(1+sum(lambda^2))
-  aaum = c(lower-mu,-Inf)
-  baum = c(upper-mu,tautil)
-  mu<-as.matrix(mu)
-  lambda<-as.matrix(lambda)
-  varphi<-lambda/sqrt(1+sum(lambda^2))
-  p<-length(mu)
-  SS = sqrtm(Sigma)
-  Omega1<- cbind(Sigma,-SS%*%varphi)
-  Omega2<- cbind(-t(SS%*%varphi),1)
-  Omega<- rbind(Omega1,Omega2)
-  rownames(Omega) <- colnames(Omega)
-  return(pmvnorm(lower = aaum,upper = baum,mean = rep(0,p+1),sigma = Omega)[1]/pnorm(tautil))
-}
 
 #######################################################################################
 #######################################################################################

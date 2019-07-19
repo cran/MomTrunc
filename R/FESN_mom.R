@@ -2,7 +2,11 @@ KmomentFESN = function(k,mu,Sigma,lambda,tau)
 {
   p = length(mu)
   tautil = tau/sqrt(1+sum(lambda^2))
-
+  if(tautil< -35){
+    #print("normal aproximation")
+    Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
+    return(KmomentFN(k = k,mu = mu - tautil*Delta,Sigma = Sigma - Delta%*%t(Delta)))
+  }
   if(all(k == 0)){
     mat  = data.frame(cbind(t(rep(0,p)),1),row.names = NULL)
     colnames(mat) = c(paste("k",seq(1,p),sep = ""),"E[k]")
@@ -28,7 +32,7 @@ KmomentFESN = function(k,mu,Sigma,lambda,tau)
   mat  = data.frame(cbind(mom[,1:p],matrix(apply(X = ressum,MARGIN = 1,FUN = sum)/pnorm(tautil),prod(k+1),1)),row.names = NULL)
   mat[prod(k+1),p+1] = 1
   colnames(mat) = c(paste("k",seq(1,p),sep = ""),"E[k]")
-  return(round(mat,4))
+  return(mat)
 }
 
 Inorm.table = function(k,mu,Sigma)
@@ -50,8 +54,8 @@ Inorm.table = function(k,mu,Sigma)
     res2 = res
     eval(parse(text = paste("dimnames(res) = dimnames(res2) = list(",paste(t,collapse = ","),")",sep = "")))
 
-    df1 = as.data.frame.table(round(res,4))
-    df2 = as.data.frame.table(round(res2,4))
+    df1 = as.data.frame.table(res)
+    df2 = as.data.frame.table(res2)
     mat1 = data.matrix(df1[prod(k+1):1,], rownames.force = NA)
     mat2 = data.matrix(df2[prod(k+1):1,-(1:p)], rownames.force = NA)
     mat = cbind(mat1,mat2)
@@ -148,7 +152,7 @@ recintab.RC = function(kappa,a,b,mu,Sigma)
       }
     }
   }
-  return(round(M,5))
+  return(M)
 }
 
 # p = 5

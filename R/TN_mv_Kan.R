@@ -12,6 +12,10 @@ Kan.IC = function(a,b,mu,Sigma){
   a1 = a-mu
   b1 = b-mu
   p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma)
+   if(p < 1e-197){
+    #print("IC.Kan corrector applied \n")
+    return(corrector(a,b,mu,Sigma,bw=36))
+  }
   run = qfun(a = a1,b = b1,Sigma = Sigma)
   qa = run$qa
   qb = run$qb
@@ -37,7 +41,15 @@ Kan.IC = function(a,b,mu,Sigma){
   varY = Sigma + Sigma%*%(D - q%*%t(muY))/p
   varY = (varY + t(varY))/2
   EYY = varY+muY%*%t(muY)
-  return(list(mean = round(muY,4),EYY = round(EYY,4),varcov = round(varY,4)))
+
+  #Validating positive variances
+  bool = diag(varY) < 0
+  if(sum(bool)>0){
+    #print("negative variance found")
+    return(corrector(a,b,mu,Sigma,bw=36))
+  }
+
+  return(list(mean = muY,EYY = EYY,varcov = varY))
 }
 
 ###############################################################################################
@@ -54,6 +66,10 @@ Kan.LRIC = function(a,b,mu,Sigma){
   a1 = a-mu
   b1 = b-mu
   p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma)
+  if(p < 1e-197){
+    #print("LRIC.Kan corrector applied \n")
+    return(corrector(a,b,mu,Sigma,bw=36))
+  }
   run = qfun(a = a1,b = b1,Sigma = Sigma)
   qa = run$qa
   qb = run$qb
@@ -93,7 +109,15 @@ Kan.LRIC = function(a,b,mu,Sigma){
   varY = Sigma + Sigma%*%(D - q%*%t(muY))/p
   varY = (varY + t(varY))/2
   EYY = varY+muY%*%t(muY)
-  return(list(mean = round(muY,4),EYY = round(EYY,4),varcov = round(varY,4)))
+
+  #Validating positive variances
+  bool = diag(varY) < 0
+  if(sum(bool)>0){
+    #print("negative variance found")
+    return(corrector(a,b,mu,Sigma,bw=36))
+  }
+
+  return(list(mean = muY,EYY = EYY,varcov = varY))
 }
 
 ###############################################################################################
@@ -108,6 +132,10 @@ Kan.RC = function(b,mu,Sigma){
   seqq = seq_len(n)
   b1 = b-mu
   p = pmvnorm(upper = as.numeric(b),mean = as.numeric(mu),sigma = Sigma)
+  if(p < 1e-197){
+    #print("RC.Kan corrector applied \n")
+    return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
+  }
   qb = qfun_b(b1 = b1,Sigma = Sigma)
   muY = mu - Sigma%*%qb/p
   D = matrix(0,n,n)
@@ -122,37 +150,45 @@ Kan.RC = function(b,mu,Sigma){
   varY = Sigma + Sigma%*%(D + qb%*%t(muY))/p
   varY = (varY + t(varY))/2
   EYY = varY+muY%*%t(muY)
-  return(list(mean = round(muY,4),EYY = round(EYY,4),varcov = round(varY,4)))
+
+  #Validating positive variances
+  bool = diag(varY) < 0
+  if(sum(bool)>0){
+    #print("negative variance found")
+    return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
+  }
+
+  return(list(mean = muY,EYY = EYY,varcov = varY))
 }
 
 # ########################
 # #TESTING
 # ########################
-# 
+#
 # p = 4
 # mu  = c(matrix(c(1:p/10)))
 # s  = 2*matrix(rnorm(p^2),p,p)
 # Sigma = S = round(s%*%t(s)/10,1)
 # lambda = seq(-1,2,length.out = p)
 # tau = 1
-# 
+#
 # a = rep(-Inf,p)
 # b = mu+2
-# 
+#
 # Kan.R(b,mu,Sigma)
 # Vaida(b,mu,Sigma)
-# 
+#
 # compare <- microbenchmark(Kan.R(b,mu,Sigma),
 #                           Vaida(b,mu,Sigma),
 #                           times = 100)
 # autoplot(compare)
-# 
+#
 # ########################
-# 
+#
 # a = mu-1
 # b = mu+2
 # a[2] = -Inf
 # b[3] = Inf
-# 
+#
 # Kan.LRIC(a,b,mu,Sigma)
 # meanvarN(a,b,mu,Sigma)

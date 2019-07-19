@@ -10,7 +10,7 @@ meanvarTMD = function(lower = NULL,upper = NULL,mu,Sigma,lambda = NULL, tau = NU
   if(length(Sigma) == 1){
     if(c(Sigma)<=0)stop("Sigma (sigma^2 for p = 1) must be positive.")
   }else{
-    if(!is.positive.definite(Sigma))stop("Sigma must be a square symmetrical real posite definite matrix.")
+    if(!is.pd(Sigma))stop("Sigma must be a square symmetrical real posite definite matrix.")
   }
   if(all(is.null(lower))){
     lower = rep(-Inf,length(mu))
@@ -82,20 +82,6 @@ meanvarTMD = function(lower = NULL,upper = NULL,mu,Sigma,lambda = NULL, tau = NU
       }
     }
   }
-
-  # cat('\n')
-  # call <- match.call()
-  # cat("Call:\n")
-  # print(call)
-  # cat('\n')
-  # cat("Mean:\n")
-  # print(c(out$mean))
-  # if(dist == "normal" | (dist == "t" & nu >= 4)){
-  #   cat('\n')
-  #   if(length(mu)==1){cat("Variance:\n")}else{cat("Varcov matrix:\n")}
-  #   print(out$varcov)
-  #   cat('\n')
-  # }
   return(out)
 }
 

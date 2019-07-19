@@ -28,7 +28,7 @@ a numeric vector of length \eqn{p} representing the skewness parameter for SN an
 It represents the extension parameter for the ESN distribution. If \code{tau == 0}, the ESN reduces to a SN distribution.
 }
   \item{dist}{
-represents the folded distribution to be computed. The values are \code{normal} (by default) for the folded Normal distribution and \code{t} for the folded Student's t-distribution.
+represents the folded distribution to be computed. The values are \code{normal}, \code{SN} , \code{ESN} and \code{t}  for the doubly truncated Normal, Skew-normal, Extended Skew-normal and Student's t-distribution respectively.
 }
   \item{nu}{
 It represents the degrees of freedom for the Student's t-distribution.

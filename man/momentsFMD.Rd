@@ -28,7 +28,7 @@ a numeric vector of length \eqn{p} representing the skewness parameter for SN an
 It represents the extension parameter for the ESN distribution. If \code{tau == 0}, the ESN reduces to a SN distribution.
 }
   \item{dist}{
-represents the folded distribution to be computed. The values are \code{normal}, \code{SN} , \code{SN} and \code{t}  for the doubly truncated Normal, Skew-normal, Extended Skew-normal and Student's t-distribution respectively.
+represents the folded distribution to be computed. The values are \code{normal}, \code{SN} , \code{ESN} and \code{t}  for the doubly truncated Normal, Skew-normal, Extended Skew-normal and Student's t-distribution respectively.
 }
   \item{nu}{
 It represents the degrees of freedom for the Student's t-distribution.
@@ -60,7 +60,8 @@ Degree of freedom must be a positive integer. If \code{nu >= 200}, Normal case i
 \section{Warning }{For the Student-t case, the \code{kappa}-\eqn{th} moment can only be computed when \code{sum(kappa)} \eqn{\le} \code{nu}-2.}
 
 \seealso{
-\code{\link{meanvarFMD}},\code{\link{momentsTMD}},\code{\link{meanvarTMD}},\code{\link{cdfFMD}}}
+\code{\link{meanvarFMD}},\code{\link{momentsTMD}},\code{\link{meanvarTMD}},\code{\link{cdfFMD}},\code{\link{dmvESN}},\code{\link{rmvESN}}
+}
 
 \examples{
 mu = c(0.1,0.2,0.3)

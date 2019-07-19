@@ -11,7 +11,7 @@ meanvarFMD = function(mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
   if(length(Sigma) == 1){
     if(c(Sigma)<=0)stop("Sigma (sigma^2 for p = 1) must be positive.")
   }else{
-    if(!is.positive.definite(Sigma))stop("Sigma must be a square symmetrical real posite definite matrix.")
+    if(!is.pd(Sigma))stop("Sigma must be a square symmetrical real posite definite matrix.")
   }
   #validating distributions and nu parameter
   if(dist=="normal"){

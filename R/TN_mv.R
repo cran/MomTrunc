@@ -16,21 +16,34 @@ meanvarN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,Sig
       return(list(mean = mu,EYY = Sigma + mu%*%t(mu),varcov = Sigma))
     }else{
       #Right censoring
-      if(p<4){
-        out = Kan.RC(b = upper,mu = mu,Sigma = Sigma)
+      bool = is.infinite(upper)
+      #if exists (-Inf,Inf) limits
+      if(sum(bool)>0){
+        out = withinfs(upper = upper,mu = mu,Sigma = Sigma,bool = bool)
       }else{
-        out = Vaida.RC(b = upper,mu = mu,Sigma = Sigma)   #OK
+        if(p<4){
+          out = Kan.RC(b = upper,mu = mu,Sigma = Sigma)
+        }else{
+          out = Vaida.RC(b = upper,mu = mu,Sigma = Sigma)   #OK
+        }
       }
     }
   }else{
     if(all(is.infinite(upper))){
       #Left censoring
-      if(p<4){
-        out = Kan.RC(b = -lower,mu = -mu,Sigma = Sigma) #OK
+      bool = is.infinite(lower)
+      #if exists (-Inf,Inf) limits
+      if(sum(bool)>0){
+        out = withinfs(upper = -lower,mu = -mu,Sigma = Sigma,bool = bool)
+        out$mean = -out$mean
       }else{
-        out = Vaida.RC(b = -lower,mu = -mu,Sigma = Sigma) #OK
+        if(p<4){
+          out = Kan.RC(b = -lower,mu = -mu,Sigma = Sigma) #OK
+        }else{
+          out = Vaida.RC(b = -lower,mu = -mu,Sigma = Sigma) #OK
+        }
+        out$mean = -out$mean
       }
-      out$mean = -out$mean
     }else{
       #intervalar censoring
       if(all(is.finite(c(lower,upper)))){
@@ -43,10 +56,16 @@ meanvarN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,Sig
       }else
       {
         #All kind of censoring
-        if(p<4){
-          out = Kan.LRIC(a = lower,b = upper,mu = mu,Sigma = Sigma)
+        bool = is.infinite(lower) & is.infinite(upper)
+        #if exists (-Inf,Inf) limits
+        if(sum(bool)>0){
+          out = withinfs(lower,upper,mu,Sigma,bool)
         }else{
-          out = Vaida.LRIC(a = lower,b = upper,mu = mu,Sigma = Sigma)
+          if(p<4){
+            out = Kan.LRIC(a = lower,b = upper,mu = mu,Sigma = Sigma)
+          }else{
+            out = Vaida.LRIC(a = lower,b = upper,mu = mu,Sigma = Sigma)
+          }
         }
       }
     }

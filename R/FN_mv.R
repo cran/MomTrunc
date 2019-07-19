@@ -33,5 +33,5 @@ meanvarFN = function(mu,Sigma)
     }
   }
   varY2 = varY - muY%*%t(muY)
-  return(list(muY = round(muY,4),EYY = round(varY,4),varY = round(varY2,4)))
+  return(list(muY = muY,EYY = varY,varY = varY2))
 }

@@ -3,6 +3,12 @@ meanvarFESN_uni = function(mu,Sigma,lambda,tau){
   s = sqrt(Sigma)
   slam   = sqrt(1+lambda^2)
   tautil = tau/slam
+  if(tautil< -35){
+    #print("normal aproximation")
+    Gamma  = Sigma/(1+lambda^2)
+    mub    = lambda*tau*Gamma/s
+    return(meanvarFN(mu-mub,Gamma))
+  }
   phi    = lambda/slam
   eta = invmills(tau,0,slam)
   gamma = sqrt(Sigma/slam^2)

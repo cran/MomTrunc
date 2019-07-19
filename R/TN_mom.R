@@ -17,8 +17,8 @@ KmomentN = function(k,a,b,mu,Sigma)
     res2 = res/as.numeric(res)[1]
     eval(parse(text = paste("dimnames(res) = dimnames(res2) = list(",paste(t,collapse = ","),")",sep = "")))
 
-    df1 = as.data.frame.table(round(res,4))
-    df2 = as.data.frame.table(round(res2,4))
+    df1 = as.data.frame.table(res)
+    df2 = as.data.frame.table(res2)
     mat1 = data.matrix(df1[prod(k+1):1,], rownames.force = NA)
     mat2 = data.matrix(df2[prod(k+1):1,-(1:p)], rownames.force = NA)
     mat = cbind(mat1,mat2)
@@ -129,7 +129,7 @@ recintab = function(kappa,a,b,mu,Sigma)
       }
     }
   }
-  return(round(M,5))
+  return(M)
 }
 
 

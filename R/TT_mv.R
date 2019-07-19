@@ -14,7 +14,7 @@ meanvarT = function(a,b,mu,Sigma,nu)
       tb = dent(b,mu,nnusigma2,nu-2)
       F1 = mu*F0 + nnusigma2*(ta-tb)
       F2 = mu*F1 + nnusigma2*(pent(b,mu,nnusigma2,nu-2) - pent(a,mu,nnusigma2,nu-2) + ifelse(a==-Inf,0,a*ta) - ifelse(b==Inf,0,b*tb))
-      return(list(mean = round(F1/F0,4),EYY = round(F2/F0,4),varcov = round(F2/F0 - (F1/F0)^2,4)))
+      return(list(mean = F1/F0,EYY = F2/F0,varcov = F2/F0 - (F1/F0)^2))
     }
     GB = GenzBretz(maxpts = (p-1)*1e4, abseps = 1e-6, releps = 0)
     #print(GB$maxpts)
@@ -53,7 +53,7 @@ meanvarT = function(a,b,mu,Sigma,nu)
     Exx  = muY%*%t(mu) +  (F0nnu*diag(p) + Wa%*%diag(ca) - Wb%*%diag(cb))%*%SSigma/F0
     varY = Exx - muY%*%t(muY)
     varY = (varY + t(varY))/2
-    return(list(mean = round(muY,4),EYY = round(Exx,4),varcov = round(varY,4)))
+    return(list(mean = muY,EYY = Exx,varcov = varY))
   }else{
     p = length(mu)
     nnu = nu/(nu-2)
@@ -87,6 +87,6 @@ meanvarT = function(a,b,mu,Sigma,nu)
       }
     }
     muY  = mu + SSigma%*%(ca - cb)/F0
-    return(list(mean = round(muY,4),EYY = matrix(NA,p,p),varcov = matrix(NA,p,p)))
+    return(list(mean = muY,EYY = matrix(NA,p,p),varcov = matrix(NA,p,p)))
   }
 }

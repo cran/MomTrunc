@@ -11,6 +11,13 @@ meanvarESN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
     out = meanvarESNuni(a = lower,b = upper,mu = mu,Sigma = Sigma,lambda = lambda,tau = tau)  #OK
     return(out)
   }
+  #tau goes to infinite
+  tautil<-tau/sqrt(1+sum(lambda^2))
+  if(tautil< -35){
+    #print("normal aproximation")
+    Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
+    return(meanvarN7(lower = lower,upper = upper,mu = mu - tautil*Delta,Sigma = Sigma - Delta%*%t(Delta)))
+  }
   if(all(is.infinite(lower))){
     if(all(is.infinite(upper))){
       #No truncating at all
@@ -23,10 +30,18 @@ meanvarESN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
       varpsi = lambda/sqrt(1+sum(lambda^2))
       Omega  = cbind(rbind(Sigma,-t(varpsi)%*%SS),rbind(-SS%*%varpsi,1))
       rownames(Omega) <- colnames(Omega)
-      if(p<4){
-        out = Kan.RC(b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
+
+
+      bool = is.infinite(upper)
+      #if exists (-Inf,Inf) limits
+      if(sum(bool)>0){
+        out = withinfs(upper = c(upper,tautil),mu = c(mu,0),Sigma = Omega,bool = c(bool,FALSE))
       }else{
-        out = Vaida.RC(b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)   #OK
+        if(p<4){
+          out = Kan.RC(b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
+        }else{
+          out = Vaida.RC(b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)   #OK
+        }
       }
     }
   }else{
@@ -38,12 +53,19 @@ meanvarESN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
       varpsi = lambda/sqrt(1+sum(lambda^2))
       Omega  = cbind(rbind(Sigma,t(varpsi)%*%SS),rbind(SS%*%varpsi,1))
       rownames(Omega) <- colnames(Omega)
-      if(p<4){
-        out = Kan.RC(b = c(-lower,tautil),mu = c(-mu,0),Sigma = Omega) #OK
+
+      bool = is.infinite(lower)
+      #if exists (-Inf,Inf) limits
+      if(sum(bool)>0){
+        out = withinfs(upper = c(-lower,tautil),mu = c(-mu,0),Sigma = Omega,bool = c(bool,FALSE))
       }else{
-        out = Vaida.RC(b = c(-lower,tautil),mu = c(-mu,0),Sigma = Omega) #OK
+        if(p<4){
+          out = Kan.RC(b = c(-lower,tautil),mu = c(-mu,0),Sigma = Omega) #OK
+        }else{
+          out = Vaida.RC(b = c(-lower,tautil),mu = c(-mu,0),Sigma = Omega) #OK
+        }
+        out$mean = -out$mean
       }
-      out$mean = -out$mean
     }else{
       SS   = sqrtm(Sigma)
       tautil = tau/sqrt(1+sum(lambda^2))
@@ -62,10 +84,16 @@ meanvarESN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
       }else
       {
         #All kind of censoring
-        if(p<4){
-          out = Kan.LRIC(a = c(lower,-Inf),b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
+        bool = is.infinite(lower) & is.infinite(upper)
+        #if exists (-Inf,Inf) limits
+        if(sum(bool)>0){
+          out = withinfs(c(lower,-Inf),c(upper,tautil),c(mu,0),Omega,bool = c(bool,FALSE))
         }else{
-          out = Vaida.LRIC(a = c(lower,-Inf),b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
+          if(p<4){
+            out = Kan.LRIC(a = c(lower,-Inf),b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
+          }else{
+            out = Vaida.LRIC(a = c(lower,-Inf),b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
+          }
         }
       }
     }
