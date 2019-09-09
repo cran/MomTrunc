@@ -2,6 +2,8 @@
 
 momentsFMD = function(kappa,mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
 {
+  mu = c(mu)
+  lambda = c(lambda)
   #Validating dims data set
   if(ncol(as.matrix(kappa)) > 1 | !all(kappa >= 0) | length(c(kappa)) != length(c(mu))) stop("kappa must be numeric with same dimensions than mu.")
   if(ncol(as.matrix(mu)) > 1 | !is.numeric(mu)) stop("mu must be numeric and have just one column")

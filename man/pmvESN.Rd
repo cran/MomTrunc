@@ -9,7 +9,7 @@ Computes the distribution function of the multivariate extended-skew normal (ESN
 }
 \usage{
 pmvESN(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda)),
-mu = rep(0,length(lambda)),Sigma,lambda,tau)
+        mu = rep(0,length(lambda)),Sigma,lambda,tau, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,6 +30,9 @@ a numeric vector of length \eqn{p} representing the skewness parameter for SN an
 }
 \item{tau}{
 It represents the extension parameter for the ESN distribution. If \code{tau == 0}, the ESN reduces to a SN distribution.
+}
+\item{...}{
+Arguments passed to the \code{pmvnorm} fucntion from the \code{mvtnorm}, for instance, \code{algorithm}.
 }
 }
 \details{
@@ -52,7 +55,7 @@ Maintainer: Christian E. Galarza <\email{cgalarza88@gmail.com}>
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \seealso{
-\code{\link{dmvESN}},\code{\link{rmvESN}},\code{\link{meanvarTMD}},\code{\link{momentsTMD}}
+\code{\link{dmvESN}},\code{\link{rmvESN}}, \code{\link{meanvarFMD}},\code{\link{meanvarTMD}},\code{\link{momentsTMD}}
 }
 \examples{
 lower = rep(-Inf,4)

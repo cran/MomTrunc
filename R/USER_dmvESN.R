@@ -1,7 +1,4 @@
-#######################################################################################
-#######################################################################################
-
-dmvESN<-function(x,mu=c(0,0),Sigma=diag(2),lambda=c(-1,1),tau=1){
+dmvESN = function(x,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda,tau=0){
   #Validating Lambda
   if(is.null(lambda)){
     #not provided by user
@@ -13,7 +10,7 @@ dmvESN<-function(x,mu=c(0,0),Sigma=diag(2),lambda=c(-1,1),tau=1){
     }
     if(all(lambda==0)){
       warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
-      out = dmvnorm(x = x,mean = mu,sigma = Sigma)
+      out = dmvnorm(x = x,mean = c(mu),sigma = as.matrix(Sigma))
     }
   }
   if(is.null(tau)){
@@ -28,7 +25,7 @@ dmvESN<-function(x,mu=c(0,0),Sigma=diag(2),lambda=c(-1,1),tau=1){
     if(tautil< -37){
       #print("normal aproximation")
       Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
-      return(dmvnorm(x = x,mean = c(mu - tautil*Delta),sigma = Sigma - Delta%*%t(Delta)))
+      return(dmvnorm(x = x,mean = c(mu - tautil*Delta),sigma = as.matrix(Sigma - Delta%*%t(Delta))))
     }
     return(dmvESN0(x,mu,Sigma,lambda,tau))
   }
@@ -39,15 +36,14 @@ dmvESN0 <- function(y, mu, Sigma, lambda,tau){
   #mu, lambda: devem ser do tipo vetor de mesma dimens?o igual a ncol(y) = p
   #Sigma: Matrix p x p
   if(length(c(mu)) == 1){return(dmvESN1(c(y),mu,Sigma,lambda,tau))}
-  if(is.matrix(y)){
+  if(!is.matrix(y)){
     y = matrix(y,ncol = nrow(Sigma),byrow = TRUE)
   }
   n <- nrow(y)
   p <- ncol(y)
   tautil<-tau/sqrt(1+sum(lambda^2))
-  dens <- dmvnorm(y, c(mu),Sigma)
-  #*
-   # pnorm(apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
-    #              (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau)/pnorm(tautil)
+  dens <- dmvnorm(y, c(mu),Sigma)*
+    pnorm(apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
+                  (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau)/pnorm(tautil)
   return(dens)
 }

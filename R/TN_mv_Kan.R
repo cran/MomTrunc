@@ -11,16 +11,21 @@ Kan.IC = function(a,b,mu,Sigma){
   seqq = seq_len(n)
   a1 = a-mu
   b1 = b-mu
-  p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma)
-   if(p < 1e-197){
+  p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma,algorithm = GenzBretz(maxpts = 25000))
+   if(p < 1e-250){
     #print("IC.Kan corrector applied \n")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
-  run = qfun(a = a1,b = b1,Sigma = Sigma)
+  run = qfun.noinf(a = a1,b = b1,Sigma = Sigma)
   qa = run$qa
   qb = run$qb
   q = qa-qb
   muY = mu+ Sigma%*%q/p
+
+  if(max(abs(muY))> 10*max(abs(c(a,b)[is.finite(c(a,b))]))| any(muY < a | muY > b)){
+    return(corrector(a,b,mu,Sigma,bw=36))
+  }
+
   D = matrix(0,n,n)
   for(i in seqq){
     D[i,i] = a[i]*qa[i]
@@ -42,11 +47,13 @@ Kan.IC = function(a,b,mu,Sigma){
   varY = (varY + t(varY))/2
   EYY = varY+muY%*%t(muY)
 
-  #Validating positive variances
   bool = diag(varY) < 0
   if(sum(bool)>0){
     #print("negative variance found")
-    return(corrector(a,b,mu,Sigma,bw=36))
+    out = corrector(a,b,mu,Sigma,bw=36)
+    out$mean = muY
+    out$EYY = out$varcov + out$mean%*%t(out$mean)
+    return(out)
   }
 
   return(list(mean = muY,EYY = EYY,varcov = varY))
@@ -65,8 +72,8 @@ Kan.LRIC = function(a,b,mu,Sigma){
   seqq = seq_len(n)
   a1 = a-mu
   b1 = b-mu
-  p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma)
-  if(p < 1e-197){
+  p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma,algorithm = GenzBretz(maxpts = 25000))
+  if(p < 1e-250){
     #print("LRIC.Kan corrector applied \n")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
@@ -75,6 +82,11 @@ Kan.LRIC = function(a,b,mu,Sigma){
   qb = run$qb
   q = qa-qb
   muY = mu+ Sigma%*%q/p
+
+  if(max(abs(muY))> 10*max(abs(c(a,b)[is.finite(c(a,b))])) | any(muY < a | muY > b)){
+    return(corrector(a,b,mu,Sigma,bw=36))
+  }
+
   D = matrix(0,n,n)
   for(i in seqq){
     if(a[i] != -Inf){
@@ -114,7 +126,10 @@ Kan.LRIC = function(a,b,mu,Sigma){
   bool = diag(varY) < 0
   if(sum(bool)>0){
     #print("negative variance found")
-    return(corrector(a,b,mu,Sigma,bw=36))
+    out = corrector(a,b,mu,Sigma,bw=36)
+    out$mean = muY
+    out$EYY = out$varcov + out$mean%*%t(out$mean)
+    return(out)
   }
 
   return(list(mean = muY,EYY = EYY,varcov = varY))
@@ -131,13 +146,18 @@ Kan.RC = function(b,mu,Sigma){
   s = sqrt(diag(Sigma))
   seqq = seq_len(n)
   b1 = b-mu
-  p = pmvnorm(upper = as.numeric(b),mean = as.numeric(mu),sigma = Sigma)
-  if(p < 1e-197){
+  p = pmvnorm(upper = as.numeric(b),mean = as.numeric(mu),sigma = Sigma,algorithm = GenzBretz(maxpts = 25000))
+  if(p < 1e-250){
     #print("RC.Kan corrector applied \n")
     return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
   }
   qb = qfun_b(b1 = b1,Sigma = Sigma)
   muY = mu - Sigma%*%qb/p
+
+  if(max(abs(muY))> 10*max(abs(b[is.finite(b)])) | any(muY > b)){
+    return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
+  }
+
   D = matrix(0,n,n)
   for(i in seqq){
     D[i,i] = D[i,i]-b[i]*qb[i]
@@ -155,7 +175,10 @@ Kan.RC = function(b,mu,Sigma){
   bool = diag(varY) < 0
   if(sum(bool)>0){
     #print("negative variance found")
-    return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
+    out = corrector(upper = b,mu = mu,Sigma = Sigma,bw=36)
+    out$mean = muY
+    out$EYY = out$varcov + out$mean%*%t(out$mean)
+    return(out)
   }
 
   return(list(mean = muY,EYY = EYY,varcov = varY))

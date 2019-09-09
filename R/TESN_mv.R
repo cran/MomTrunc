@@ -13,7 +13,7 @@ meanvarESN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
   }
   #tau goes to infinite
   tautil<-tau/sqrt(1+sum(lambda^2))
-  if(tautil< -35){
+  if(tautil< -36){
     #print("normal aproximation")
     Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
     return(meanvarN7(lower = lower,upper = upper,mu = mu - tautil*Delta,Sigma = Sigma - Delta%*%t(Delta)))
@@ -25,8 +25,6 @@ meanvarESN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
     }else{
       #Right censoring
       SS   = sqrtm(Sigma)
-      tautil = tau/sqrt(1+sum(lambda^2))
-      #xi = pnorm(tautil)
       varpsi = lambda/sqrt(1+sum(lambda^2))
       Omega  = cbind(rbind(Sigma,-t(varpsi)%*%SS),rbind(-SS%*%varpsi,1))
       rownames(Omega) <- colnames(Omega)
@@ -48,8 +46,6 @@ meanvarESN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
     if(all(is.infinite(upper))){
       #Left censoring
       SS   = sqrtm(Sigma)
-      tautil = tau/sqrt(1+sum(lambda^2))
-      #xi = pnorm(tautil)
       varpsi = lambda/sqrt(1+sum(lambda^2))
       Omega  = cbind(rbind(Sigma,t(varpsi)%*%SS),rbind(SS%*%varpsi,1))
       rownames(Omega) <- colnames(Omega)
@@ -64,11 +60,11 @@ meanvarESN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
         }else{
           out = Vaida.RC(b = c(-lower,tautil),mu = c(-mu,0),Sigma = Omega) #OK
         }
-        out$mean = -out$mean
       }
+      out$mean = -out$mean
     }else{
       SS   = sqrtm(Sigma)
-      tautil = tau/sqrt(1+sum(lambda^2))
+      #tautil = tau/sqrt(1+sum(lambda^2))
       #xi = pnorm(tautil)
       varpsi = lambda/sqrt(1+sum(lambda^2))
       Omega  = cbind(rbind(Sigma,-t(varpsi)%*%SS),rbind(-SS%*%varpsi,1))
@@ -77,9 +73,9 @@ meanvarESN7 = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
       if(all(is.finite(c(lower,upper)))){
         #no infinites #all intervalar truncated
         if(p<4){
-          out = Kan.IC(a = c(lower,-10^7),b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
+          out = Kan.LRIC(a = c(lower,-Inf),b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
         }else{
-          out = Vaida.IC(a = c(lower,-10^7),b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
+          out = Vaida.LRIC(a = c(lower,-Inf),b = c(upper,tautil),mu = c(mu,0),Sigma = Omega)
         }
       }else
       {

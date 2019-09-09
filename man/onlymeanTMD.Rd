@@ -1,21 +1,25 @@
-\name{momentsFMD}
-\alias{momentsFMD}
+\name{onlymeanTMD}
+\alias{onlymeanTMD}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Moments for folded multivariate distributions
+Mean for doubly truncated multivariate distributions
 }
 \description{
-It computes the kappa-th raw moment for the folded \code{p}-variate Normal, Skew-normal (SN), Extended Skew-normal (ESN) and Student's t-distribution. It also output some other lower moments (than \code{kappa}) involved in the recurrence approach.
+It computes the mean vector for the doubly truncated \code{p}-variate Normal, Skew-normal (SN), Extended Skew-normal (ESN) and Student's t-distribution.
 }
 \usage{
-momentsFMD(kappa,mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
+onlymeanTMD(lower = rep(-Inf, length(mu)), upper = rep(Inf,length(mu)),mu,Sigma,
+            lambda = NULL,tau = NULL,dist,nu = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{kappa}{
-moments vector of length \eqn{p}. All its elements must be integers greater or equal to \eqn{0}.
+  \item{lower}{
+the vector of lower limits of length \eqn{p}.
 }
-  \item{mu}{
+  \item{upper}{
+the vector of upper limits of length \eqn{p}.
+}
+\item{mu}{
 a numeric vector of length \eqn{p} representing the location parameter.
 }
   \item{Sigma}{
@@ -35,18 +39,17 @@ It represents the degrees of freedom for the Student's t-distribution.
 }
 }
 \details{
-Normal case by default, i.e., when \code{dist} is not provided. Univariate case is also considered, where \code{Sigma} will be the variance \eqn{\sigma^2}.
+Univariate case is also considered, where \code{Sigma} will be the variance \eqn{\sigma^2}. Normal case code is an R adaptation of the Matlab available function \code{dtmvnmom.m} from Kan & Robotti (2017) and it is used for \code{p<=3}. For higher dimensions we use an extension of the algorithm in Vaida (2009).
 }
 \value{
-A data frame containing \eqn{p+1} columns. The \eqn{p} first containing the set of moments involved in the recursive approach and the last column containing the expected value.
-
-Normal cases (ESN, SN and normal) return \code{prod(kappa)+1} moments while the Student's t-distribution case returns \code{sum(kappa)+1}. See example section.
+It returns the mean vector of length \eqn{p}.
 }
-
 \references{
-Kan, R., & Robotti, C. (2017). On Moments of Folded and Truncated Multivariate Normal Distributions. Journal of Computational and Graphical Statistics, (just-accepted).
+Kan R. & Robotti C. (2017) On Moments of Folded and Truncated Multivariate Normal Distributions, Journal of Computational and Graphical Statistics, 26:4, 930-934.
 
 C.E. Galarza, L.A. Matos, D.K. Dey & V.H. Lachos. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut.
+
+Vaida, F. & Liu, L. (2009). Fast implementation for normal mixed effects models with censored response. Journal of Computational and Graphical Statistics, 18(4), 797-817.
 }
 \author{Christian E. Galarza <\email{cgalarza88@gmail.com}> and
 Victor H. Lachos <\email{hlachos@uconn.edu}>
@@ -57,25 +60,25 @@ Maintainer: Christian E. Galarza <\email{cgalarza88@gmail.com}>
 Degree of freedom must be a positive integer. If \code{nu >= 200}, Normal case is considered."
 }
 
-\section{Warning }{For the Student-t case, the \code{kappa}-\eqn{th} moment can only be computed when \code{sum(kappa)} \eqn{\le} \code{nu}-2.}
+\section{Warning }{For now, he mean can only be provided when \code{nu} is larger than 2.}
 
 \seealso{
-\code{\link{meanvarFMD}}, \code{\link{meanvarFMD}},\code{\link{momentsTMD}},\code{\link{meanvarTMD}},\code{\link{cdfFMD}},\code{\link{dmvESN}},\code{\link{rmvESN}}
+\code{\link{momentsTMD}}, \code{\link{meanvarFMD}}, \code{\link{momentsFMD}},\code{\link{dmvESN}},\code{\link{rmvESN}}
 }
-
 \examples{
+a = c(-0.8,-0.7,-0.6)
+b = c(0.5,0.6,0.7)
 mu = c(0.1,0.2,0.3)
 Sigma = matrix(data = c(1,0.2,0.3,0.2,1,0.4,0.3,0.4,1),
                nrow = length(mu),ncol = length(mu),byrow = TRUE)
-value1 = momentsFMD(c(2,0,1),mu,Sigma,dist="normal")
-value2 = momentsFMD(c(0,2,0),mu,Sigma,dist = "t",nu = 7)
-value3 = momentsFMD(c(2,0,1),mu,Sigma,lambda = c(-2,0,1),dist = "SN")
-value4 = momentsFMD(c(2,0,1),mu,Sigma,lambda = c(-2,0,1),tau = 1,dist = "ESN")
+value1 = onlymeanTMD(a,b,mu,Sigma,dist="normal")
+value2 = onlymeanTMD(a,b,mu,Sigma,dist = "t",nu = 4)
+value3 = onlymeanTMD(a,b,mu,Sigma,lambda = c(-2,0,1),dist = "SN")
+value4 = onlymeanTMD(a,b,mu,Sigma,lambda = c(-2,0,1),tau = 1,dist = "ESN")
 }
-
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Folded}% use one of  RShowDoc("KEYWORDS")
+\keyword{Truncated}% use one of  RShowDoc("KEYWORDS")
 \keyword{Multivariate}% __ONLY ONE__ keyword per line
 \keyword{Student's t}
 \keyword{Normal}

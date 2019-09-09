@@ -74,7 +74,7 @@ Degree of freedom must be a positive integer. If \code{nu >= 200}, Normal case i
 \section{Warning }{For the Student-t case, the \code{kappa}-\eqn{th} moment can only be computed when \code{sum(kappa)} \eqn{\le} \code{nu}-2.}
 
 \seealso{
-\code{\link{meanvarTMD}},\code{\link{momentsFMD}},\code{\link{meanvarFMD}},\code{\link{dmvESN}},\code{\link{rmvESN}}
+\code{\link{meanvarTMD}}, \code{\link{meanvarFMD}},\code{\link{momentsFMD}},\code{\link{meanvarFMD}},\code{\link{dmvESN}},\code{\link{rmvESN}}
 }
 
 \examples{

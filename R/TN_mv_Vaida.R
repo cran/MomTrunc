@@ -19,20 +19,28 @@ Vaida.IC = function(a=-c(3,2),b=c(1,2),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.5,1),2
     a1 <- (a-mu)/sqrt(diag(Sigma))
     b1 <- (b-mu)/sqrt(diag(Sigma))
     R <-  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
-    alpha <- pmvnorm(lower = as.vector(a1),upper=as.vector(b1),corr=R)[1]
-    if(alpha < 1e-197){
+    alpha <- pmvnorm(lower = as.vector(a1),upper=as.vector(b1),corr=R,algorithm = GenzBretz(maxpts = 25000))[1]
+    if(alpha < 1e-250){
       #print("IC.Vaida corrector applied \n")
       return(corrector(a,b,mu,Sigma,bw=36))
     }
     qq = qfun.noinf(a1,b1,Sigma = R)
     da = qq$qa
     db = qq$qb
+
+    EX = -R%*%(da - db)/alpha
+
+    #-qq is b standardized
+    if(max(abs(EX))> 10*max(abs(c(a1,b1)[is.finite(c(a1,b1))])) | any(EX < a1 | EX > b1)){
+      return(corrector(a,b,mu,Sigma,bw=36))
+    }
+
     H =  RH = matrix(0,p,p)
     if(p==2){
       H[1,2] = H[2,1] = dmvnorm(x = as.vector(a1),sigma=R) - dmvnorm(x = as.vector(c(a1[1],b1[2])),sigma=R) - dmvnorm(x = as.vector(c(b1[1],a1[2])),sigma=R) + dmvnorm(x = as.vector(b1),sigma=R)
       RH[1,2] <- RH[2,1] <- R[1,2]*H[1,2]
     }else{
-    for(s in 1:(p-1)){
+      for(s in 1:(p-1)){
         for(t in (s+1):p){
           ##print(s);#print(t)
           invR <- solve(R[c(s,t), c(s,t), drop=F])
@@ -54,7 +62,7 @@ Vaida.IC = function(a=-c(3,2),b=c(1,2),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.5,1),2
     b1[is.infinite(b1)] = 0
     h = (a1*da - b1*db) - apply(RH, 1, sum)
     diag(H) = h
-    EX <- -R%*%(da - db)/alpha   # a vector with a length of p
+    #EX <- -R%*%(da - db)/alpha   # a vector with a length of p
     EXX <- R + R%*%(H/alpha)%*%R
     varX <- EXX-EX%*%t(EX)
     Eycens <- -diag(sqrt(diag(Sigma)))%*%EX+mu
@@ -65,7 +73,10 @@ Vaida.IC = function(a=-c(3,2),b=c(1,2),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.5,1),2
     bool = diag(varyic) < 0
     if(sum(bool)>0){
       #print("negative variance found")
-      return(corrector(a,b,mu,Sigma,bw=36))
+      out = corrector(a,b,mu,Sigma,bw=36)
+      out$mean = Eycens
+      out$EYY = out$varcov + out$mean%*%t(out$mean)
+      return(out)
     }
 
   }
@@ -99,8 +110,9 @@ Vaida.LRIC<-function(a=-c(-Inf,2),b=c(1,Inf),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.
     a1 <- (a-mu)/sqrt(diag(Sigma))
     b1 <- (b-mu)/sqrt(diag(Sigma))
     R <-  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
-    alpha <- pmvnorm(lower = as.vector(a1),upper=as.vector(b1),corr=R)[1]
-    if(alpha < 1e-197){
+    #alpha <- pmvnorm(lower = as.vector(a1),upper=as.vector(b1),corr=R)[1]
+    alpha <- pmvnorm(lower = as.vector(a1),upper=as.vector(b1),corr=R,algorithm = GenzBretz(maxpts = 25000))
+    if(alpha < 1e-250){
       #print("LRIC.Vaida corrector applied \n")
       return(corrector(a,b,mu,Sigma,bw=36))
     }
@@ -108,6 +120,14 @@ Vaida.LRIC<-function(a=-c(-Inf,2),b=c(1,Inf),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.
     qq = qfun(a1,b1,Sigma = R)
     da = qq$qa
     db = qq$qb
+
+    EX = -R%*%(da - db)/alpha
+
+    #-qq is b standardized
+    if(max(abs(EX))> 10*max(abs(c(a1,b1)[is.finite(c(a1,b1))])) | any(EX < a1 | EX > b1)){
+      return(corrector(a,b,mu,Sigma,bw=36))
+    }
+
     #var
     H =  RH = matrix(0,p,p)
     if(p==2){
@@ -137,7 +157,7 @@ Vaida.LRIC<-function(a=-c(-Inf,2),b=c(1,Inf),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.
     b1[is.infinite(b1)] = 0
     h = (a1*da - b1*db) - apply(RH, 1, sum)
     diag(H) = h
-    EX <- -R%*%(da - db)/alpha   # a vector with a length of p
+    #EX <- -R%*%(da - db)/alpha   # a vector with a length of p
     EXX <- R + R%*%(H/alpha)%*%R
     varX <- EXX-EX%*%t(EX)
     Eycens <- -diag(sqrt(diag(Sigma)))%*%EX+mu
@@ -148,7 +168,10 @@ Vaida.LRIC<-function(a=-c(-Inf,2),b=c(1,Inf),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.
     bool = diag(varyic) < 0
     if(sum(bool)>0){
       #print("negative variance found")
-      return(corrector(a,b,mu,Sigma,bw=36))
+      out = corrector(a,b,mu,Sigma,bw=36)
+      out$mean = Eycens
+      out$EYY = out$varcov + out$mean%*%t(out$mean)
+      return(out)
     }
   }
   return(list(mean=Eycens,EYY=E2yy,varcov=varyic))
@@ -179,8 +202,8 @@ Vaida.RC = function(b=c(1,2),mu=c(0,0), Sigma = diag(2)){
   else {
     qq = diag(1/sqrt(diag(Sigma)))%*%(-b+mu)
     R =  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
-    alpha = pmvnorm(upper=as.vector(-qq),corr=R)
-    if(alpha < 1e-197){
+    alpha = pmvnorm(upper=as.vector(-qq),corr=R,algorithm = GenzBretz(maxpts = 25000))[1]
+    if(alpha < 1e-250){
       #print("RC.Vaida corrector applied \n")
       return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
     }
@@ -191,6 +214,13 @@ Vaida.RC = function(b=c(1,2),mu=c(0,0), Sigma = diag(2)){
       nu = -qq[-j]+R[-j,j, drop=F]%*%qq[j]
       dd[j] = dnorm(-qq[j])*pmvnorm(upper=as.vector(nu), sigma=V)
     }
+    EX = R%*%dd/alpha
+
+    #-qq is b standardized
+    if(max(abs(EX))> 10*max(abs(qq[is.finite(qq)])) | any(EX > b)){
+      return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
+    }
+
     H = matrix(rep(0, p*p), nrow=p)
     RH = matrix(rep(0, p*p), nrow=p)
     if(p==2){
@@ -210,7 +240,7 @@ Vaida.RC = function(b=c(1,2),mu=c(0,0), Sigma = diag(2)){
     }
     h = qq*dd-apply(RH, 1, sum)
     diag(H) = h
-    EX = R%*%dd/alpha
+    #EX = R%*%dd/alpha
     EXX = R + R%*%(H/alpha)%*%R
     varX = EXX-EX%*%t(EX)
     Eycens = -diag(sqrt(diag(Sigma)))%*%EX+mu
@@ -221,8 +251,46 @@ Vaida.RC = function(b=c(1,2),mu=c(0,0), Sigma = diag(2)){
     bool = diag(varyic) < 0
     if(sum(bool)>0){
       #print("negative variance found")
-      return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
+      out = corrector(upper = b,mu = mu,Sigma = Sigma,bw=36)
+      out$mean = Eycens
+      out$EYY = out$varcov + out$mean%*%t(out$mean)
+      return(out)
     }
   }
   return(list(mean=Eycens,EYY=E2yy,varcov=varyic))
+}
+
+
+###############################################################################################
+###############################################################################################
+#This function is optimized for the case when it DOES exist infinite values in the lower/upper
+#truncation limits
+###############################################################################################
+###############################################################################################
+
+Vaida.LRIC.onlymean<-function(a=rep(-Inf,length(mu)),b=rep(Inf,length(mu)),mu,Sigma){
+  p=length(mu)
+  if(p==1){
+    return(onlymeanNuni(a,b,mu,Sigma))
+  }else{
+    a1 <- (a-mu)/sqrt(diag(Sigma))
+    b1 <- (b-mu)/sqrt(diag(Sigma))
+    R <-  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
+    alpha <- pmvnorm(lower = as.vector(a1),upper=as.vector(b1),corr=R,algorithm = GenzBretz(maxpts = 25000))[1]
+    if(alpha < 1e-50){
+      #print("LRIC.Vaida corrector applied \n")
+      return(corrector_onlymean(lower = a,upper = b,mu = mu,Sigma = Sigma,bw=36))
+    }
+    #mean
+    qq = qfun(a1,b1,Sigma = R)
+    da = qq$qa
+    db = qq$qb
+    EX <- -R%*%(da - db)/alpha   # a vector with a length of p
+    Eycens <- -diag(sqrt(diag(Sigma)))%*%EX+mu
+    if(max(abs(Eycens))> 10*max(abs(c(a,b)[is.finite(c(a,b))])) | any(Eycens < a | Eycens > b)){
+      #print("LRIC.Vaida corrector applied \n")
+      return(corrector_onlymean(lower = a,upper = b,mu = mu,Sigma = Sigma,bw=36))
+    }
+  }
+  return(list(mean=Eycens))
 }

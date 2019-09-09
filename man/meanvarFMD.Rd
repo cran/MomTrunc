@@ -57,7 +57,7 @@ Degree of freedom must be a positive integer. If \code{nu >= 200}, Normal case i
 \section{Warning }{The mean can only be provided when \code{nu} is larger than 2. On the other hand, the varcov matrix can only be provided when \code{nu} is larger than 3.}
 
 \seealso{
-\code{\link{momentsFMD}}, \code{\link{meanvarTMD}}, \code{\link{cdfFMD}},\code{\link{dmvESN}},\code{\link{rmvESN}}
+\code{\link{momentsFMD}}, \code{\link{meanvarFMD}}, \code{\link{meanvarTMD}}, \code{\link{cdfFMD}},\code{\link{dmvESN}},\code{\link{rmvESN}}
 }
 \examples{
 mu = c(0.1,0.2,0.3)

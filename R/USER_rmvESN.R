@@ -1,7 +1,7 @@
 #######################################################################################
 #######################################################################################
 
-rmvESN<-function(n,mu=c(0,0),Sigma=diag(2),lambda=c(-1,1),tau=1){
+rmvESN<-function(n,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda,tau=0){
   #Validating Lambda
   if(is.null(lambda)){
     #not provided by user
@@ -20,6 +20,9 @@ rmvESN<-function(n,mu=c(0,0),Sigma=diag(2),lambda=c(-1,1),tau=1){
   }else{
     #validate input
     if(!is.numeric(tau) | length(tau)>1)stop("Tau must be numeric real number.")
+    if(tau == 0){
+      return(rmvSN(n,mu,Sigma,lambda))
+    }
     tautil = tau/sqrt(1+sum(lambda^2))
     if(tautil < -2.2){
       if(tautil< -37){
@@ -44,7 +47,7 @@ rESN0<-function(n = 10000,mu=c(0,2),Sigma=diag(2),lambda=c(-1,3),tau=1){
   Omega1<- cbind(Sigma,-SS%*%varphi)
   Omega2<- cbind(-t(SS%*%varphi),1)
   Omega<- rbind(Omega1,Omega2)
-  gen <- rmvnorm(n = round(n/max(pnorm(tautil)-0.01,0.02)),mean = rep(0,p+1),sigma = Omega)
+  gen <- rmvnorm(n = round(n/max(pnorm(tautil)-0.05,0.02)) + 10,mean = rep(0,p+1),sigma = Omega)
   bool = gen[,p+1] < tautil
   nn = sum(bool)
   gen1 = gen[bool,1:p]
@@ -52,4 +55,16 @@ rESN0<-function(n = 10000,mu=c(0,2),Sigma=diag(2),lambda=c(-1,3),tau=1){
   gen2 = muM + gen1
   nout = min(n,nrow(gen2))
   return(gen2[1:nout,])
+}
+
+rmvSN = function(n,mu,Sigma,lambda){
+  p = length(lambda)
+  T = abs(rnorm(n))
+  Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
+  Gamma = Sigma - Delta%*%t(Delta)
+  gen  = matrix(NA,n,p)
+  for(i in 1:n){
+    gen[i,] = as.matrix(mu) + T[i]*Delta + sqrtm(Gamma)%*%as.matrix(rnorm(p))
+  }
+  return(gen)
 }

@@ -1,6 +1,6 @@
-export(dmvESN,pmvESN,rmvESN,meanvarFMD,momentsFMD,meanvarTMD,momentsTMD,cdfFMD)
+export(dmvSN,dmvESN,pmvESN,rmvSN,rmvESN,meanvarFMD,momentsFMD,onlymeanTMD,meanvarTMD,momentsTMD,cdfFMD)
 #importFrom("matrixcalc","is.positive.definite")
 importFrom("mvtnorm","rmvnorm","dmvnorm","pmvt","pmvnorm","GenzBretz","TVPACK")
-importFrom("stats", "dnorm", "dt", "pnorm", "pt")
+importFrom("stats", "dnorm", "dt", "pnorm", "pt","rnorm")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 #importFrom("mnormt","dmvnorm","pmnorm")

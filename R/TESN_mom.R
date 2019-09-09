@@ -2,7 +2,7 @@ KmomentESN = function(k,a,b,mu,Sigma,lambda,tau)
 {
   #tau goes to infinite
   tautil<-tau/sqrt(1+sum(lambda^2))
-  if(tautil< -35){
+  if(tautil< -36){
     #print("normal aproximation")
     Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
     return(KmomentN(k = k,a = a, b = b,mu = c(mu - tautil*Delta),Sigma = Sigma - Delta%*%t(Delta)))

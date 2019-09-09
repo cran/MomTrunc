@@ -4,13 +4,16 @@
 select = function(a,b,mu,s){
   a1 = (a-mu)/s
   b1 = (b-mu)/s
-  if(a1<0 & b1<0){
-    val = b - exp(b/10)
+  if(all(a1<0 & b1<0)){
+    val = mu - s*invmills(b1)
+    #val = b - exp(b1/10)
+    return(val)
   }
-  if(a1>0 & b1>0){
-    val = a + exp(-a/10)
+  if(all(a1>0 & b1>0)){
+    #val = a + exp(-a1/10)
+    val = mu + s*invmills(-a1)
+    return(val)
   }
-  return(val)
 }
 
 #######################################################################################
@@ -109,5 +112,5 @@ AcumESN<-function(y=c(1,1),mu=c(0,0),Sigma=diag(2),lambda=c(2,-1),tau=1){
 
 invmills = function(x,mu=0,sd=1){
   z = (x-mu)/sd
-  if(z < -37.5){return(-z/sd)}else{return(dnorm(x,mu,sd)/pnorm(x,mu,sd))}
+  if(z < -37.5){return(-z/sd)}else{return(dnorm(x,mu,sd)/pnorm2(upper = x,mean = mu,sd = sd))}
 }

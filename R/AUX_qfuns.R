@@ -7,7 +7,7 @@
 qfun = function(a,b,Sigma)
 {
   n = length(a)
-  s = sqrt(diag(Sigma))
+  s = sqrt(diag(as.matrix(Sigma)))
   if(n==1){
     qa = dnorm(a/s)/s
     qb = dnorm(b/s)/s
@@ -72,7 +72,7 @@ qfun_b = function(b1,Sigma)
 qfun.noinf = function(a,b,Sigma)
 {
   n = length(a)
-  s = sqrt(diag(Sigma))
+  s = sqrt(diag(as.matrix(Sigma)))
   if(n==1){
     qa = dnorm(a/s)/s
     qb = dnorm(b/s)/s

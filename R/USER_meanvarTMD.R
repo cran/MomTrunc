@@ -2,6 +2,8 @@
 
 meanvarTMD = function(lower = NULL,upper = NULL,mu,Sigma,lambda = NULL, tau = NULL,dist,nu = NULL)
 {
+  mu = c(mu)
+  lambda = c(lambda)
   #Validating dims data set
   if(ncol(as.matrix(mu)) > 1 | !is.numeric(mu)) stop("mu must be numeric and have just one column")
 
