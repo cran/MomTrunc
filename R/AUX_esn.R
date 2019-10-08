@@ -1,6 +1,14 @@
 #library(mnormt)
 #library(mvtnorm)
 
+sym.matrix = function(X){
+  return((X + t(X))/2)
+}
+
+#######################################################################################
+#######################################################################################
+
+
 select = function(a,b,mu,s){
   a1 = (a-mu)/s
   b1 = (b-mu)/s
@@ -86,6 +94,9 @@ AcumESN<-function(y=c(1,1),mu=c(0,0),Sigma=diag(2),lambda=c(2,-1),tau=1){
   if(all(y == -Inf)){return(0)}
   if(all(y ==  Inf)){return(1)}
   tautil<-tau/sqrt(1+sum(lambda^2))
+  #####
+  Sigma = sym.matrix(Sigma)
+  #####
   if(tautil< -35){
     #print("normal aproximation")
     Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))

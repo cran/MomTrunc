@@ -11,6 +11,11 @@ Kan.IC = function(a,b,mu,Sigma){
   seqq = seq_len(n)
   a1 = a-mu
   b1 = b-mu
+
+  #####
+  Sigma = sym.matrix(Sigma)
+  #####
+
   p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma,algorithm = GenzBretz(maxpts = 25000))
    if(p < 1e-250){
     #print("IC.Kan corrector applied \n")
@@ -72,6 +77,11 @@ Kan.LRIC = function(a,b,mu,Sigma){
   seqq = seq_len(n)
   a1 = a-mu
   b1 = b-mu
+
+  #####
+  Sigma = sym.matrix(Sigma)
+  #####
+
   p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma,algorithm = GenzBretz(maxpts = 25000))
   if(p < 1e-250){
     #print("LRIC.Kan corrector applied \n")
@@ -146,6 +156,11 @@ Kan.RC = function(b,mu,Sigma){
   s = sqrt(diag(Sigma))
   seqq = seq_len(n)
   b1 = b-mu
+
+  #####
+  Sigma = sym.matrix(Sigma)
+  #####
+
   p = pmvnorm(upper = as.numeric(b),mean = as.numeric(mu),sigma = Sigma,algorithm = GenzBretz(maxpts = 25000))
   if(p < 1e-250){
     #print("RC.Kan corrector applied \n")

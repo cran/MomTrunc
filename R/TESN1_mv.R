@@ -9,8 +9,11 @@ meanvarESNuni = function(a=-Inf,b=Inf,mu,Sigma,lambda,tau){
     }
     F0     = AcumESN(b,mu,Sigma,lambda,tau) - AcumESN(a,mu,Sigma,lambda,tau)
     if(F0 < 1e-250){
-      val = select(a,b,mu,s)
-      return(list(mean = val,EYY = 0.0001 + val^2, varcov = 0.0001))
+      Delta = s*lambda/sqrt(1+lambda^2)
+      Omega  = cbind(rbind(Sigma,-Delta),rbind(-Delta,1))
+      rownames(Omega) <- colnames(Omega)
+      out = Kan.LRIC(a = c(a,-Inf),b = c(b,tautil),mu = c(mu,0),Sigma = Omega)
+      return(list(mean = out$mean[-2],EYY = out$EYY[1,1],varcov = out$varcov[1,1]))
     }
     phi    = lambda/sqrt(1+sum(lambda^2))
     eta    = invmills(tau,0,sqrt(1+lambda^2))

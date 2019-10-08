@@ -16,6 +16,11 @@ Vaida.IC = function(a=-c(3,2),b=c(1,2),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.5,1),2
     varY = Sigma+(mu-muY)*muY+(a*dnorm(a1)-b*dnorm(b1))/L*s
     return(list(mean = muY,EYY = varY+muY^2,varcov = varY))
   }else{
+
+    #####
+    Sigma = sym.matrix(Sigma)
+    #####
+
     a1 <- (a-mu)/sqrt(diag(Sigma))
     b1 <- (b-mu)/sqrt(diag(Sigma))
     R <-  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
@@ -107,6 +112,11 @@ Vaida.LRIC<-function(a=-c(-Inf,2),b=c(1,Inf),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.
     varY = Sigma+(mu-muY)*muY+(a*dnorm(a1)-b*dnorm(b1))/L*s
     return(list(mean = muY,EYY = varY+muY^2,varcov = varY))
   }else{
+
+    #####
+    Sigma = sym.matrix(Sigma)
+    #####
+
     a1 <- (a-mu)/sqrt(diag(Sigma))
     b1 <- (b-mu)/sqrt(diag(Sigma))
     R <-  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
@@ -125,7 +135,7 @@ Vaida.LRIC<-function(a=-c(-Inf,2),b=c(1,Inf),mu=c(0,0),Sigma=matrix(c(1,-0.5,-0.
 
     #-qq is b standardized
     if(max(abs(EX))> 10*max(abs(c(a1,b1)[is.finite(c(a1,b1))])) | any(EX < a1 | EX > b1)){
-      return(corrector(a,b,mu,Sigma,bw=36))
+      return(corrector(lower = a,upper = b,mu,Sigma,bw=36))
     }
 
     #var
@@ -200,6 +210,10 @@ Vaida.RC = function(b=c(1,2),mu=c(0,0), Sigma = diag(2)){
     E2yy=varyic+Eycens^2
   }
   else {
+    #####
+    Sigma = sym.matrix(Sigma)
+    #####
+
     qq = diag(1/sqrt(diag(Sigma)))%*%(-b+mu)
     R =  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
     alpha = pmvnorm(upper=as.vector(-qq),corr=R,algorithm = GenzBretz(maxpts = 25000))[1]
@@ -273,6 +287,9 @@ Vaida.LRIC.onlymean<-function(a=rep(-Inf,length(mu)),b=rep(Inf,length(mu)),mu,Si
   if(p==1){
     return(onlymeanNuni(a,b,mu,Sigma))
   }else{
+    #####
+    Sigma = sym.matrix(Sigma)
+    #####
     a1 <- (a-mu)/sqrt(diag(Sigma))
     b1 <- (b-mu)/sqrt(diag(Sigma))
     R <-  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
