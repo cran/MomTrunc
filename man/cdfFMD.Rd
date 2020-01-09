@@ -43,9 +43,9 @@ It returns the distribution value for a single point \code{x}.
 \references{
 Chakraborty, A. K., & Chatterjee, M. (2013). On multivariate folded normal distribution. Sankhya B, 75(1), 1-15.
 
+	Galarza C.E., Matos L.A., Dey D.K. & Lachos V.H. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut <\url{https://stat.uconn.edu/tech-reports-2019/}>.
+	
 Kan R. & Robotti C. (2017) On Moments of Folded and Truncated Multivariate Normal Distributions, Journal of Computational and Graphical Statistics, 26:4, 930-934.
-
-C.E. Galarza, L.A. Matos, D.K. Dey & V.H. Lachos. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut.
 }
 
 \author{Christian E. Galarza <\email{cgalarza88@gmail.com}> and
@@ -54,7 +54,7 @@ Victor H. Lachos <\email{hlachos@uconn.edu}>
 Maintainer: Christian E. Galarza <\email{cgalarza88@gmail.com}>
 }
 \note{
-Degree of freedom must be a positive integer. If \code{nu >= 200}, Normal case is considered."
+Degrees of freedom must be a positive integer. If \code{nu >= 200}, Normal case is considered."
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~

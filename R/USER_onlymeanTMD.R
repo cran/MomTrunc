@@ -1,8 +1,55 @@
 #TN_mean
 onlymeanTMD = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,Sigma,lambda = NULL, tau = NULL,
-                       dist, nu = NULL){
+                       Gamma = NULL,nu = NULL,dist){
   mu = c(mu)
+  tau = c(tau)
+
+  if(dist == "ST"){
+    return(onlymeanTMD(lower = lower,upper = upper,mu = mu,Sigma = Sigma,lambda = lambda,Gamma = 1,tau = 0,nu = nu,dist = "SUT"))
+  }
+
+  if(dist == "EST"){
+    return(onlymeanTMD(lower = lower,upper = upper,mu = mu,Sigma = Sigma,lambda = lambda,Gamma = 1,tau = tau,nu = nu,dist = "SUT"))
+  }
+
+  #SUN and SUT distributions
+  if(dist == "SUN" | dist == "SUT"){
+    p = length(mu)
+    q = length(tau)
+
+    if(!all(c(is.finite(mu)),c(is.finite(Sigma)))){stop("mu and Sigma must contain only finite values.")}
+
+    if(any(is.na(c(mu,Sigma,lambda,tau,Gamma))))stop("Check parameters mu, Sigma, lambda, tau and Gamma. NA's have been found.")
+
+    if(is.null(lambda) | is.null(tau) | is.null(Gamma)) stop("Lambda, tau and Gamma parameters must be provided.")
+
+    lambda = as.matrix(lambda)
+    Gamma = as.matrix(Gamma)
+
+    if(nrow(Sigma) != p | ncol(Sigma) != p | nrow(lambda) != p | ncol(lambda) != q | nrow(Gamma) != q | ncol(Gamma) != q){
+      stop("Nonconforming parameters dimensions. See manual.")
+    }
+
+    if(!(all(eigen(Gamma)$values >= 0) & all(diag(Gamma) == 1))){stop("Gamma must be a valid correlation matrix.")}
+
+    xi = c(tau,mu)
+    Delta = sqrtm(Sigma)%*%lambda
+    Omega1 = cbind(Gamma + t(lambda)%*%lambda,t(Delta))
+    Omega2 = cbind(Delta,Sigma)
+    Omega  = rbind(Omega1,Omega2)
+    if(dist == "SUN"){
+      out = onlymeanTSLCT0(lower_p = lower,upper_p = upper,xi = xi,Omega = Omega,nu = nu,dist = "normal",lower_q = rep(0,q),upper_q = rep(Inf,q))
+    }
+    if(dist == "SUT"){
+      out = onlymeanTSLCT0(lower_p = lower,upper_p = upper,xi = xi,Omega = Omega,nu = nu,dist = "t",lower_q = rep(0,q),upper_q = rep(Inf,q))
+    }
+    return(out$mean)
+  }
+
   lambda = c(lambda)
+
+  if(!all(c(is.finite(mu)),c(is.finite(Sigma)))){stop("mu and Sigma must contain only finite values.")}
+
   #Validating dims data set
   if(ncol(as.matrix(mu)) > 1 | !is.numeric(mu)) stop("mu must be numeric and have just one column")
 
@@ -33,18 +80,16 @@ onlymeanTMD = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
       if(is.null(nu)){
         stop("Degrees of freedom 'nu' must be provided for the T case.")
       }else{
-        if(nu%%1!=0){
-          stop("Degrees of freedom 'nu' must be an integer greater than 2.")
+        if(nu<=0){
+          stop("Degrees of freedom 'nu' must be a positive number.")
         }else{
-          if(nu <= 2){stop("Sorry, we can only compute the first moment for degrees of freedom larger than 2.")
-          }else{
-            if(nu >= 200){
-              warning("For degrees of freedom >= 200, Normal case is considered.",immediate. = TRUE)
+            if(nu >= 300){
+              warning("For degrees of freedom >= 300, Normal case is considered.",immediate. = TRUE)
               out = onlymeanN(lower = lower,upper = upper,mu = mu,Sigma = Sigma)
             }else{
-              out = onlymeanT(a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
+              out = onlymeanTall(lower = lower,upper = upper,mu = mu,Sigma = Sigma,nu = nu)
             }
-          }
+
         }
       }
     }else{
@@ -78,5 +123,5 @@ onlymeanTMD = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
       }
     }
   }
-  return(as.numeric(unlist(out)))
+  return(out$mean)
 }

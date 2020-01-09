@@ -1,6 +1,16 @@
-export(dmvSN,dmvESN,pmvESN,rmvSN,rmvESN,meanvarFMD,momentsFMD,onlymeanTMD,meanvarTMD,momentsTMD,cdfFMD)
-#importFrom("matrixcalc","is.positive.definite")
-importFrom("mvtnorm","rmvnorm","dmvnorm","pmvt","pmvnorm","GenzBretz","TVPACK")
-importFrom("stats", "dnorm", "dt", "pnorm", "pt","rnorm")
-importFrom("utils", "setTxtProgressBar", "txtProgressBar")
-#importFrom("mnormt","dmvnorm","pmnorm")
+useDynLib(MomTrunc)
+import(Rcpp)
+importFrom("mvtnorm","dmvnorm","dmvt","rmvnorm","rmvt","pmvnorm","pmvt","TVPACK")
+importFrom("tlrmvnmvt","pmvn.genz","pmvt.genz")
+importFrom("stats", "dnorm", "dt", "pnorm", "pt","rnorm","integrate","rgamma","mahalanobis", "var","qt","runif")
+importFrom("tmvtnorm", "rtmvnorm", "rtmvt")
+importFrom("hypergeo","genhypergeo")
+export(dmvSN,pmvSN,rmvSN,
+       dmvST,pmvST,rmvST,
+       dmvESN,pmvESN,rmvESN,
+       dmvEST,pmvEST,rmvEST,
+       onlymeanTMD,meanvarTMD,momentsTMD,
+       meanvarFMD,momentsFMD,cdfFMD)
+#RcpponlymeanN,RcppmeanvarN,RcppmeanvarN_b,RcppmeanvarN_ab,
+#  Fpmvt_cpp,pmvt_cpp,
+#  Rcppqfun,Rcppqfun_b,Rcppqfun_ab,

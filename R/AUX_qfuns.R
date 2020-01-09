@@ -28,10 +28,12 @@ qfun = function(a,b,Sigma)
   qa = qb = rep(0,n)
   for(i in 1:n){
     if(a[i] != -Inf){
-      qa[i] = dnorm(x = a[i],mean = 0,sd = s[i])*pmvnorm(lower = a[-i],upper = b[-i],mean = Sigma[-i,i]/Sigma[i,i]*a[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]))
+      qa[i] = log2prod0(dnorm(x = a[i],mean = 0,sd = s[i]),
+                        pmvn.genz(lower = a[-i],upper = b[-i],mean = Sigma[-i,i]/Sigma[i,i]*a[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]),uselog2 = TRUE)$Estimation)
     }
     if(b[i] != Inf){
-      qb[i] = dnorm(x = b[i],mean = 0,sd = s[i])*pmvnorm(lower = a[-i],upper = b[-i],mean = Sigma[-i,i]/Sigma[i,i]*b[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]))
+      qb[i] = log2prod0(dnorm(x = b[i],mean = 0,sd = s[i]),
+                        pmvn.genz(lower = a[-i],upper = b[-i],mean = Sigma[-i,i]/Sigma[i,i]*b[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]),uselog2 = TRUE)$Estimation)
     }
   }
   return(list(qa = qa,qb = qb))
@@ -60,7 +62,8 @@ qfun_b = function(b1,Sigma)
   qb = rep(0,p)
   for(i in 1:p){
     if(b1[i] != Inf){
-      qb[i] = dnorm(x = b1[i],mean = 0,sd = s[i])*pmvnorm(upper = b1[-i],mean = Sigma[-i,i]/Sigma[i,i]*b1[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]))
+      qb[i] = log2prod0(dnorm(x = b1[i],mean = 0,sd = s[i]),
+                        pmvn.genz(upper = b1[-i],mean = Sigma[-i,i]/Sigma[i,i]*b1[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]),uselog2 = TRUE)$Estimation)
     }
   }
   return(qb)
@@ -88,8 +91,10 @@ qfun.noinf = function(a,b,Sigma)
   }
   qa = qb = rep(0,n)
   for(i in 1:n){
-    qa[i] = dnorm(x = a[i],mean = 0,sd = s[i])*pmvnorm(lower = a[-i],upper = b[-i],mean = Sigma[-i,i]/Sigma[i,i]*a[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]))
-    qb[i] = dnorm(x = b[i],mean = 0,sd = s[i])*pmvnorm(lower = a[-i],upper = b[-i],mean = Sigma[-i,i]/Sigma[i,i]*b[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]))
+    qa[i] = log2prod0(dnorm(x = a[i],mean = 0,sd = s[i]),
+                      pmvn.genz(lower = a[-i],upper = b[-i],mean = Sigma[-i,i]/Sigma[i,i]*a[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]),uselog2 = TRUE)$Estimation)
+    qb[i] = log2prod0(dnorm(x = b[i],mean = 0,sd = s[i]),
+                      pmvn.genz(lower = a[-i],upper = b[-i],mean = Sigma[-i,i]/Sigma[i,i]*b[i],sigma = Sigma[-i,-i] - (Sigma[-i,i]/Sigma[i,i])%*%t(Sigma[i,-i]),uselog2 = TRUE)$Estimation)
   }
   return(list(qa = qa,qb = qb))
 }

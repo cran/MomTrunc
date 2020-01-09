@@ -26,7 +26,7 @@ F1kgen = function(k,a,b,mu,sigma2,nu)
 
 #########################################################################
 
-ckgen = function(p,eim,k,a,b,mu,Sigma,nu,cuts= 2.5e4)
+ckgen = function(p,eim,k,a,b,mu,Sigma,nu)
 {
   out = rep(NA,p)
 
@@ -46,24 +46,23 @@ ckgen = function(p,eim,k,a,b,mu,Sigma,nu,cuts= 2.5e4)
     SSS   = SSigma[-j,-j] - SSigma[,j][-j]%*%t(SSigma[j,][-j])/ssigma2[j]
 
     out[j] = k[j]*Fkgen(k-eim[j,],a,b,mu,SSigma,nu-2) +
-      a[j]^k[j]*dent(a[j],mu[j],ssigma2[j],nu-2)*Fkgen(k[-j],a[-j],b[-j],mua,deltaA[j]*SSS,nu-1,cuts) -
-      b[j]^k[j]*dent(b[j],mu[j],ssigma2[j],nu-2)*Fkgen(k[-j],a[-j],b[-j],mub,deltaB[j]*SSS,nu-1,cuts)
+      a[j]^k[j]*dent(a[j],mu[j],ssigma2[j],nu-2)*Fkgen(k[-j],a[-j],b[-j],mua,deltaA[j]*SSS,nu-1) -
+      b[j]^k[j]*dent(b[j],mu[j],ssigma2[j],nu-2)*Fkgen(k[-j],a[-j],b[-j],mub,deltaB[j]*SSS,nu-1)
   }
   return(out)
 }
 
 #########################################################################
 
-Fkgen = function(k,a,b,mu,Sigma,nu,cuts= 2.5e4)
+Fkgen = function(k,a,b,mu,Sigma,nu)
 {
   p = length(k)
-  GB = GenzBretz(maxpts = cuts,abseps = 1e-9,releps = 0)
   if(p==1)
   {
     return(as.numeric(F1kgen(k,a,b,mu,Sigma,nu)))
   }else{
     if(any(k<0)) return(0)
-    if(all(k == 0)){return(as.numeric(pmvt(lower = a - mu,upper = b - mu,df = nu,sigma = Sigma, algorithm = GB)))}
+    if(all(k == 0)){return(as.numeric(pmvt.genz(lower = a - mu,upper = b - mu,nu = nu,sigma = Sigma)[[1]]))}
     eim  = diag(p)
     nnu  = nu/(nu-2)
     i = min(seq(1,p)[k>0])
@@ -76,22 +75,21 @@ Fkgen = function(k,a,b,mu,Sigma,nu,cuts= 2.5e4)
 
 #########################################################################
 
-Fk = function(k,a,b,mu,Sigma,nu,cuts= 2.5e4)
+Fk = function(k,a,b,mu,Sigma,nu)
 {
   p = length(k)
-  GB = GenzBretz(maxpts = cuts,abseps = 1e-9,releps = 0)
   if(p==1)
   {
     res = F1k(k,a,b,mu,Sigma,nu)
     return(list(ks = res$ks, ress = res$ress))
   }else{
     if(any(k<0)) return(list(ress= 0))
-    if(all(k == 0)){return(list(ks = rep(0,p),ress = as.numeric(pmvt(lower = a - mu,upper = b - mu,df = nu,sigma = Sigma,algorithm = GB))))}
+    if(all(k == 0)){return(list(ks = rep(0,p),ress = as.numeric(pmvt.genz(lower = a - mu,upper = b - mu,nu = nu,sigma = Sigma)[[1]])))}
     eim  = diag(p)
     nnu  = nu/(nu-2)
     i = min(seq(1,p)[k>0])
     kk = k-eim[i,]
-    ck = ckgen(p,eim,kk,a,b,mu,Sigma,nu,cuts)
+    ck = ckgen(p,eim,kk,a,b,mu,Sigma,nu)
     fk = Fk(kk,a,b,mu,Sigma,nu)
     res1 = fk$ress[1]
     res  = mu[i]*fk$ress[1] + as.numeric(nnu*as.matrix(t(eim[i,]))%*%Sigma%*%ck)

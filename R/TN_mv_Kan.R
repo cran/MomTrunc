@@ -16,18 +16,27 @@ Kan.IC = function(a,b,mu,Sigma){
   Sigma = sym.matrix(Sigma)
   #####
 
-  p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma,algorithm = GenzBretz(maxpts = 25000))
-   if(p < 1e-250){
-    #print("IC.Kan corrector applied \n")
+  logp = pmvn.genz(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)$Estimation
+  prob = 2^logp
+  if(prob > 1e-50){
+    #no problems, so we run the Rcpp model
+    #print("no problems")
+    return(RcppmeanvarN_ab(a,b,mu,Sigma,prob))
+  }
+  
+  if(prob < 1e-250){
+    #print("LRIC.Kan corrector applied \n")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
-  run = qfun.noinf(a = a1,b = b1,Sigma = Sigma)
+  
+  run = Rcppqfun_ab(a1,b1,Sigma)
   qa = run$qa
   qb = run$qb
   q = qa-qb
-  muY = mu+ Sigma%*%q/p
+  muY = mu+ Sigma%*%log2ratio(q,logp)
 
   if(max(abs(muY))> 10*max(abs(c(a,b)[is.finite(c(a,b))]))| any(muY < a | muY > b)){
+    #print("IC.Kan mean corrector applied 2 \n")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
 
@@ -37,18 +46,18 @@ Kan.IC = function(a,b,mu,Sigma){
     D[i,i] = D[i,i]-b[i]*qb[i]
     RR = Sigma[-i,-i]-Sigma[-i,i]%*%t(Sigma[i,-i])/Sigma[i,i]
     ma = mu[-i]+Sigma[-i,i]/Sigma[i,i]*a1[i]
-    run1 = qfun(a[-i]-ma,b[-i]-ma,RR)
+    run1 = Rcppqfun_ab(a[-i]-ma,b[-i]-ma,RR)
     qa1 = run1$qa
     qb1 = run1$qb
     wa = qa[i]*ma+dnorm(x = a[i],mean = mu[i],sd = s[i])*RR%*%(qa1-qb1)
     mb = mu[-i]+Sigma[-i,i]/Sigma[i,i]*b1[i]
-    run2 = qfun(a[-i]-mb,b[-i]-mb,RR)
+    run2 = Rcppqfun_ab(a[-i]-mb,b[-i]-mb,RR)
     qa2 = run2$qa
     qb2 = run2$qb
     wb = qb[i]*mb + dnorm(x = b[i],mean = mu[i],sd = s[i])*RR%*%(qa2-qb2)
     D[i,-i] = wa-wb
   }
-  varY = Sigma + Sigma%*%(D - q%*%t(muY))/p
+  varY = Sigma + Sigma%*%log2ratio(D - q%*%t(muY),logp)
   varY = (varY + t(varY))/2
   EYY = varY+muY%*%t(muY)
 
@@ -82,16 +91,23 @@ Kan.LRIC = function(a,b,mu,Sigma){
   Sigma = sym.matrix(Sigma)
   #####
 
-  p = pmvnorm(lower = a,upper = b,mean = mu,sigma = Sigma,algorithm = GenzBretz(maxpts = 25000))
-  if(p < 1e-250){
+  logp = pmvn.genz(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)$Estimation
+  prob = 2^logp
+  if(prob > 1e-50){
+    #no problems, so we run the Rcpp model
+    return(RcppmeanvarN(a,b,mu,Sigma,prob))
+  }
+  
+  if(prob < 1e-250){
     #print("LRIC.Kan corrector applied \n")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
-  run = qfun(a = a1,b = b1,Sigma = Sigma)
+  
+  run = Rcppqfun(a1,b1,Sigma)
   qa = run$qa
   qb = run$qb
   q = qa-qb
-  muY = mu+ Sigma%*%q/p
+  muY = mu+ Sigma%*%log2ratio(q,logp)
 
   if(max(abs(muY))> 10*max(abs(c(a,b)[is.finite(c(a,b))])) | any(muY < a | muY > b)){
     return(corrector(a,b,mu,Sigma,bw=36))
@@ -111,7 +127,7 @@ Kan.LRIC = function(a,b,mu,Sigma){
     }else
     {
       ma = mu[-i]+Sigma[-i,i]/Sigma[i,i]*a1[i]
-      run1 = qfun(a[-i]-ma,b[-i]-ma,RR)
+      run1 = Rcppqfun(a[-i]-ma,b[-i]-ma,RR)
       qa1 = run1$qa
       qb1 = run1$qb
       wa = qa[i]*ma+dnorm(x = a[i],mean = mu[i],sd = s[i])*RR%*%(qa1-qb1)
@@ -121,14 +137,14 @@ Kan.LRIC = function(a,b,mu,Sigma){
     }else
     {
       mb = mu[-i]+Sigma[-i,i]/Sigma[i,i]*b1[i]
-      run2 = qfun(a[-i]-mb,b[-i]-mb,RR)
+      run2 = Rcppqfun(a[-i]-mb,b[-i]-mb,RR)
       qa2 = run2$qa
       qb2 = run2$qb
       wb = qb[i]*mb + dnorm(x = b[i],mean = mu[i],sd = s[i])*RR%*%(qa2-qb2)
     }
     D[i,-i] = wa-wb
   }
-  varY = Sigma + Sigma%*%(D - q%*%t(muY))/p
+  varY = Sigma + Sigma%*%log2ratio(D - q%*%t(muY),logp)
   varY = (varY + t(varY))/2
   EYY = varY+muY%*%t(muY)
 
@@ -147,7 +163,7 @@ Kan.LRIC = function(a,b,mu,Sigma){
 
 ###############################################################################################
 ###############################################################################################
-#This is the original Vaida's function for upper truncation (right censoring)
+#right censoring
 ###############################################################################################
 ###############################################################################################
 
@@ -161,13 +177,21 @@ Kan.RC = function(b,mu,Sigma){
   Sigma = sym.matrix(Sigma)
   #####
 
-  p = pmvnorm(upper = as.numeric(b),mean = as.numeric(mu),sigma = Sigma,algorithm = GenzBretz(maxpts = 25000))
-  if(p < 1e-250){
-    #print("RC.Kan corrector applied \n")
+  logp = pmvn.genz(upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)$Estimation
+  
+  prob = 2^logp
+  if(prob > 1e-50){
+    #no problems, so we run the Rcpp model
+    return(RcppmeanvarN_b(b,mu,Sigma,prob))
+  }
+  
+  if(prob < 1e-250){
+    #print("LRIC.Kan corrector applied \n")
     return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
   }
-  qb = qfun_b(b1 = b1,Sigma = Sigma)
-  muY = mu - Sigma%*%qb/p
+  
+  qb = Rcppqfun_b(b1,Sigma)
+  muY = mu - Sigma%*%log2ratio(qb,logp)
 
   if(max(abs(muY))> 10*max(abs(b[is.finite(b)])) | any(muY > b)){
     return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
@@ -178,11 +202,11 @@ Kan.RC = function(b,mu,Sigma){
     D[i,i] = D[i,i]-b[i]*qb[i]
     RR = Sigma[-i,-i]-Sigma[-i,i]%*%t(Sigma[i,-i])/Sigma[i,i]
     mb = mu[-i]+Sigma[-i,i]/Sigma[i,i]*b1[i]
-    qb2 = qfun_b(b[-i]-mb,RR)
+    qb2 = Rcppqfun_b(b[-i]-mb,RR)
     wb = qb[i]*mb - dnorm(x = b[i],mean = mu[i],sd = s[i])*RR%*%qb2
     D[i,-i] = -wb
   }
-  varY = Sigma + Sigma%*%(D + qb%*%t(muY))/p
+  varY = Sigma + Sigma%*%log2ratio(D + qb%*%t(muY),logp)
   varY = (varY + t(varY))/2
   EYY = varY+muY%*%t(muY)
 

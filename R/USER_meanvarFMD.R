@@ -1,9 +1,12 @@
 #MEAN AND VARIANCE
 
-meanvarFMD = function(mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
+meanvarFMD = function(mu,Sigma,lambda = NULL,tau = NULL,nu = NULL,dist)
 {
   mu = c(mu)
   lambda = c(lambda)
+
+  if(!all(c(is.finite(mu)),c(is.finite(Sigma)))){stop("mu and Sigma must contain only finite values.")}
+
   #Validating dims data set
   if(ncol(as.matrix(mu)) > 1 | !is.numeric(mu)) stop("mu must be numeric and have just one column")
 
@@ -17,26 +20,26 @@ meanvarFMD = function(mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
   }
   #validating distributions and nu parameter
   if(dist=="normal"){
-    out = meanvarFN(mu = mu,Sigma = Sigma)
+    out = RcppmeanvarFN(mu = mu,S = Sigma)
   }else{
     if(dist == "t"){
       if(is.null(nu)){
         stop("Degrees of freedom 'nu' must be provided for the T case.")
       }else{
         if(nu%%1!=0){
-          stop("Degrees of freedom 'nu' must be an integer greater than 2.")
+          stop("Degrees of freedom 'nu' must be an integer greater than 1.")
         }else{
-          if(nu <= 2){stop("Sorry, we can only compute the first moment for degrees of freedom larger than 2.")
+          if(nu <= 1){stop("Sorry, moments only exists for degrees of freedom larger than 1.")
           }else{
-            if(nu >= 200){
-              warning("For degrees of freedom >= 200, Normal case is considered.",immediate. = TRUE)
-              out = meanvarFN(mu = mu,Sigma = Sigma)
+            if(nu >= 300){
+              #warning("For degrees of freedom >= 300, Normal case is considered.",immediate. = TRUE)
+              out = RcppmeanvarFN(mu = mu,S = Sigma)
             }else{
-              if(nu < 4){
-                warning("Sorry, we can only compute the second moment when the degrees of freedom is larger than 3.",immediate. = TRUE)
-                out = meanvarFT(mu = mu,Sigma = Sigma,nu = nu)
+              if(nu == 2){
+                warning("Second moment does not exist for degrees of freedom less than 3.",immediate. = TRUE)
+                out = RcppmeanvarFT(mu = mu,S = Sigma,nu = nu)
               }else{
-                out = meanvarFT(mu = mu,Sigma = Sigma,nu = nu)
+                out = RcppmeanvarFT(mu = mu,S = Sigma,nu = nu)
               }
             }
           }
@@ -53,7 +56,7 @@ meanvarFMD = function(mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
           if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
           if(all(lambda==0)){
             warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
-            out = meanvarFN(mu = mu,Sigma = Sigma)
+            out = RcppmeanvarFN(mu = mu,S = Sigma)
           }
         }
         if(dist=="SN"){

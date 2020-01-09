@@ -10,7 +10,7 @@ dmvESN = function(x,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda,t
     }
     if(all(lambda==0)){
       warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
-      out = dmvnorm(x = x,mean = c(mu),sigma = as.matrix(Sigma))
+      return(dmvnorm(x = x,mean = c(mu),sigma = as.matrix(Sigma)))
     }
   }
   if(is.null(tau)){
@@ -42,8 +42,31 @@ dmvESN0 <- function(y, mu, Sigma, lambda,tau){
   n <- nrow(y)
   p <- ncol(y)
   tautil<-tau/sqrt(1+sum(lambda^2))
-  dens <- dmvnorm(y, c(mu),Sigma)*
+  dens <- dmvnorm(y, c(mu),Sigma)*exp(
     pnorm(apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
-                  (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau)/pnorm(tautil)
+                  (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau,log.p = TRUE) - pnorm(tautil,log.p = TRUE))
+  return(dens)
+}
+
+#######################################################################################
+#######################################################################################
+
+dmvESN1 <- function(y, mu=0, Sigma=1, lambda,tau){
+  #y: deve ser uma matrix onde cada linha tem um vetor de dados multivariados de dimens?o ncol(y) = p. nrow(y) = tamanho da amostra
+  #mu, lambda: devem ser do tipo vetor de mesma dimens?o igual a ncol(y) = p
+  #Sigma: Matrix p x p
+  n <- length(c(y))
+  p <- 1
+  s = sqrt(Sigma)
+  tautil = tau/sqrt(1+sum(lambda^2))
+  if(tautil< -35){
+    #print("normal aproximation")
+    Gamma  = Sigma/(1+lambda^2)
+    mub    = lambda*tau*Gamma/s
+    return(dnorm(y,mu-mub,sqrt(Gamma)))
+  }
+  dens <- dnorm(x = c(y),mean = c(mu),sd = sqrt(Sigma))*exp(
+      pnorm(apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
+                  (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau,log.p = TRUE) - pnorm(tautil,log.p = TRUE))
   return(dens)
 }

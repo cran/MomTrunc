@@ -62,8 +62,8 @@ Exixj = function(mu,Sigma,lambda,tau)
   PhiESN1 = pmvESN(upper = c(0,0),mu = c(-mu[1],mu[2]),Sigma = Sigmaneg,lambda = c(-lambda[1],lambda[2]),tau = tau)[1]
   PhiESN2 = pmvESN(upper = c(0,0),mu = c(mu[1],-mu[2]),Sigma = Sigmaneg,lambda = c(lambda[1],-lambda[2]),tau = tau)[1]
   rownames(Gammaneg) <- colnames(Gammaneg)
-  Phi1 = pmvnorm(upper = c(0,0),mean = c(-m[1],m[2]),sigma = Gammaneg)[1]
-  Phi2 = pmvnorm(upper = c(0,0),mean = c(m[1],-m[2]),sigma = Gammaneg)[1]
+  Phi1 = pmvn.genz(upper = c(0,0),mean = c(-m[1],m[2]),sigma = Gammaneg)$Estimation
+  Phi2 = pmvn.genz(upper = c(0,0),mean = c(m[1],-m[2]),sigma = Gammaneg)$Estimation
   #norm part
   ddnorm1 = dnorm(0,m[1],sqrt(Gamma[1,1]))
   ddnorm2 = dnorm(0,m[2],sqrt(Gamma[2,2]))

@@ -1,14 +1,14 @@
 #######################################################################################
 #######################################################################################
 
-pmvESN = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda)),mu = rep(0,length(lambda)),Sigma,lambda,tau, ...){
+pmvESN = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda)),mu = rep(0,length(lambda)),Sigma,lambda,tau,log2 = FALSE){
   tautil<-tau/sqrt(1+sum(lambda^2))
   if(tautil< -37){
     #print("normal aproximation")
     Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
     Gamma = Sigma - Delta%*%t(Delta)
     rownames(Gamma) <- colnames(Gamma)
-    return(pmvnorm(lower = lower,upper = upper,mean = c(mu - tautil*Delta),sigma = Gamma, ...)[1])
+    return(prob_opt(lower = lower,upper = upper,mean = c(mu - tautil*Delta),sigma = Gamma,uselog2 = log2))
   }
   aaum = c(lower-mu,-Inf)
   baum = c(upper-mu,tautil)
@@ -21,5 +21,9 @@ pmvESN = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda))
   Omega2<- cbind(-t(SS%*%varphi),1)
   Omega<- rbind(Omega1,Omega2)
   rownames(Omega) <- colnames(Omega)
-  return(pmvnorm(lower = aaum,upper = baum,mean = rep(0,p+1),sigma = Omega, ...)[1]/pnorm(tautil))
+  if(log2 == TRUE){
+    return(prob_opt(lower = aaum,upper = baum,mean = rep(0,p+1),sigma = Omega,uselog2 = TRUE) - pnorm(tautil,log.p = TRUE)/log(2))
+  }else{
+    return(prob_opt(lower = aaum,upper = baum,mean = rep(0,p+1),sigma = Omega)/pnorm(tautil))
+  }
 }

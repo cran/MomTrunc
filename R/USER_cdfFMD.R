@@ -16,7 +16,7 @@ cdfFMD = function(x,mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
   #validating distributions and nu parameter
 
   if(dist=="normal"){
-    out = cdfFT(x = x,mu = mu,Sigma = Sigma,nu = 0)
+    out = cdfFN(x = x,mu = mu,Sigma = Sigma)
   }else{
     if(dist == "t"){
       if(is.null(nu)){
@@ -27,7 +27,7 @@ cdfFMD = function(x,mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
         }else{
           if(nu >= 200){
             warning("For degrees of freedom >= 200, Normal case is considered.",immediate. = TRUE)
-            out = cdfFT(x = x,mu = mu,Sigma = Sigma,nu = 0)
+            out = cdfFN(x = x,mu = mu,Sigma = Sigma)
           }else{
             out = cdfFT(x = x,mu = mu,Sigma = Sigma,nu = nu)
           }
@@ -44,7 +44,7 @@ cdfFMD = function(x,mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
           if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
           if(all(lambda==0)){
             warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
-            out = cdfFT(x = x,mu = mu,Sigma = Sigma,nu = 0)
+            out = cdfFN(x = x,mu = mu,Sigma = Sigma)
           }
         }
         if(dist=="SN"){

@@ -114,7 +114,7 @@ withinfs = function(lower = rep(-Inf,length(mu)),upper = rep(Inf,length(mu)),mu,
   seqq   = seq(1,p)
   bool   = seqq[bool]
   q      = length(bool) #infinite dims
-  if(q>1 & q<4){
+  if(q < 10){
     out.finite = Kan.LRIC(lower[-bool],upper[-bool],mu[-bool],Sigma[-bool,-bool])
   }else{
     out.finite = Vaida.LRIC(lower[-bool],upper[-bool],mu[-bool],Sigma[-bool,-bool])

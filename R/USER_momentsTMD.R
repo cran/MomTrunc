@@ -1,15 +1,27 @@
 #FULL MOMENTS TRUNCATED
 
-momentsTMD = function(kappa,lower = NULL,upper = NULL,mu,Sigma,lambda = NULL, tau = NULL,dist,nu = NULL)
+momentsTMD = function(kappa,lower = rep(-Inf,length(mu)),upper = rep(Inf,length(mu)),mu,Sigma,lambda = NULL, tau = NULL,nu = NULL,dist)
 {
   mu = c(mu)
   lambda = c(lambda)
+  
+  if(!all(c(is.finite(mu)),c(is.finite(Sigma)))){stop("mu and Sigma must contain only finite values.")}
+  
   #Validating dims data set
-  if(ncol(as.matrix(kappa)) > 1 | !all(kappa >= 0) | length(c(kappa)) != length(c(mu))) stop("kappa must be numeric with same dimensions than mu.")
+  
+  if(dist == "normal" | dist == "SN" | dist == "ESN"){
+    if(ncol(as.matrix(kappa)) > 1 | !all(kappa >= 0) | length(c(kappa)) != length(c(mu))) stop("kappa must be a non zero integer vector with same dimensions than mu.")
+  }
+  
+  if(dist == "t" | dist == "ST" | dist =="EST"){
+    if(ncol(as.matrix(kappa)) > 1 | !all(kappa >= 0) | !(length(c(kappa)) == length(c(mu)) | length(c(kappa)) == 1)) stop("kappa must be either a non zero integer vector with same dimensions than mu or an scalar being sum(kappa).")
+    if(length(c(kappa)) != 1){kappa = sum(kappa)}
+  }
+  
   if(ncol(as.matrix(mu)) > 1 | !is.numeric(mu)) stop("mu must be numeric and have just one column")
-
+  
   #validate mean an Sigma dimensions
-
+  
   if(ncol(as.matrix(Sigma)) != length(c(mu)))stop("Unconformable dimensions between mu and Sigma")
   if(length(Sigma) == 1){
     if(c(Sigma)<=0)stop("Sigma (sigma^2 for p = 1) must be positive.")
@@ -27,12 +39,13 @@ momentsTMD = function(kappa,lower = NULL,upper = NULL,mu,Sigma,lambda = NULL, ta
     if(length(c(upper)) != length(c(mu)) | !is.numeric(upper))stop("Upper bound must be numeric and have same dimension than mu.")
   }
   if(all(lower < upper) == FALSE)stop("Lower bound must be lower than or equal to upper bound.")
-
+  
   #validating distributions and nu parameter
-
-
+  
+  
   if(dist=="normal"){
-    out = KmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
+    #out = KmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
+    out = RcppKmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
   }else
   {
     if(dist == "t"){
@@ -40,20 +53,17 @@ momentsTMD = function(kappa,lower = NULL,upper = NULL,mu,Sigma,lambda = NULL, ta
         stop("Degrees of freedom 'nu' must be provided for the T case.")
       }else
       {
-        if(nu%%1!=0){
-          stop("Degrees of freedom 'nu' must be an integer greater than 2.")
+        if(nu%%1!=0 | nu <= kappa){
+          stop("Degrees of freedom 'nu' must be an integer greater than kappa.")
         }else
         {
-          if(!all(kappa == 0) & nu < max(3,sum(kappa)+2)){stop("Sorry, we can only compute the kappa-th moment for degrees of freedom greater than or equal to 'sum(kappa)+2'.")
+          if(nu >= 300){
+            #warning("For degrees of freedom >= 300, Normal case is considered.",immediate. = TRUE)
+            #out = KmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
+            out = RcppKmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
           }else
           {
-            if(nu >= 200){
-              warning("For degrees of freedom >= 200, Normal case is considered.",immediate. = TRUE)
-              out = KmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
-            }else
-            {
-              out = KmomentT(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
-            }
+            out = RcppKmomentT(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
           }
         }
       }
@@ -70,11 +80,12 @@ momentsTMD = function(kappa,lower = NULL,upper = NULL,mu,Sigma,lambda = NULL, ta
           if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
           if(all(lambda==0)){
             warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
-            out = KmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
+            #out = KmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
+            out = RcppKmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
           }
         }
         if(dist=="SN"){
-          out = KmomentESN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,lambda = lambda,tau = 0)
+          out = RcppKmomentESN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,lambda = lambda,tau = 0)
         }else
         {
           if(is.null(tau)){
@@ -83,50 +94,47 @@ momentsTMD = function(kappa,lower = NULL,upper = NULL,mu,Sigma,lambda = NULL, ta
           }else
           {
             #validate input
-            if(!is.numeric(tau) | length(tau)>1)stop("Tau must be numeric real number.")
-            out = KmomentESN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,lambda = lambda,tau = tau)
+            if(!is.numeric(tau) | length(tau)>1)stop("Tau must be a numeric real number.")
+            out = RcppKmomentESN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,lambda = lambda,tau = tau)
           }
         }
       }else
       {
-        stop("The dist values are 'normal', 't', 'SN' and 'ESN'.")
+        if(dist == "EST" | dist == "ST"){
+          #Validating Lambda
+          if(is.null(lambda)){
+            #not provided by user
+            stop("Skewness parameter 'lambda' must be provided for the EST/ST case.")
+          }else
+          {
+            #validate input
+            if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
+            if(all(lambda==0)){
+              warning("Lambda = 0, T case is considered.",immediate. = TRUE)
+              #out = KmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
+              out = RcppKmomentT(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
+            }
+          }
+          if(dist=="ST"){
+            out = RcppKmomentEST(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,lambda = lambda,tau = 0,nu = nu)
+          }else
+          {
+            if(is.null(tau)){
+              #not provided by user
+              stop("Extension parameter 'tau' must be provided for the EST case.")
+            }else
+            {
+              #validate input
+              if(!is.numeric(tau) | length(tau)>1)stop("Tau must be a numeric real number.")
+              out = RcppKmomentEST(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,lambda = lambda,tau = tau,nu = nu)
+            }
+          }
+        }else
+        {
+          stop("The dist values are 'normal', 't', 'SN', 'ESN', 'ST' and 'EST'.")
+        }
       }
     }
   }
-  # cat('\n')
-  # call <- match.call()
-  # cat("Call:\n")
-  # print(call)
-  # cat('\n')
-  # print(out)
-  # cat('\n')
   return(out)
 }
-# #TESTING
-# a = c(-0.8,-0.7,-0.6,-0.5)
-# b = c(0.5,0.6,0.7,0.8)
-# mu = c(0.1,0.2,0.3,0.4)
-# S = matrix(data = c(1,0.2,0.3,0.1,0.2,1,0.4,-0.1,0.3,0.4,1,0.2,0.1,-0.1,0.2,1),nrow = length(mu),ncol = length(mu),byrow = TRUE)
-#
-#
-# a = c(-0.8,-0.7,-0.6)
-# b = c(0.5,0.6,0.7)
-# mu = c(0.1,0.2,0.3)
-# Sigma = S = matrix(data = c(1,0.2,0.3,0.2,1,0.4,0.3,0.4,1),nrow = length(mu),ncol = length(mu),byrow = TRUE)
-#
-# #
-# resN = momentsTMD(kappa = c(2,2,2),lower = a,upper = b,mu,varcov = S,dist = "normal")
-# #
-# resT = momentsTMD(kappa = c(2,2,2),lower = a,upper = b,mu,varcov = S,dist = "t",nu = 8)
-
-
-# res1 = momentsTMD(kappa = c(2,2),lower = c(0,0),upper = c(Inf,Inf),mus,Ss,dist = "normal",nu=10)
-# k = c(5,0)
-# mu = mus
-# Sigma = Ss
-#
-# 5
-# KmomentT(k = c(2,2),a = c(0,1),b = c(2,4),mu = mus,Sigma = Ss,nu = 200)
-# KmomentN(k = c(2,2),a = c(0,1),b = c(2,4),mu = mus,S = Ss)
-# momentsTMD(kappa = c(2,2),lower = c(0,0),upper = c(Inf,Inf),mus,Ss)
-# KmomentN(k = c(1,1,1),a,b,mu,S)

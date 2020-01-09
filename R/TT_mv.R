@@ -1,92 +1,242 @@
-#######################################################################
-#STUDENT T
-#######################################################################
-
-meanvarT = function(a,b,mu,Sigma,nu)
-{
-  if(nu>=4){
-    p = length(mu)
-    nnu = nu/(nu-2)
-    if(p==1){
-      F0 = pent(b,mu,Sigma,nu) - pent(a,mu,Sigma,nu)
-      nnusigma2 = nnu*Sigma
-      ta = dent(a,mu,nnusigma2,nu-2)
-      tb = dent(b,mu,nnusigma2,nu-2)
-      F1 = mu*F0 + nnusigma2*(ta-tb)
-      F2 = mu*F1 + nnusigma2*(pent(b,mu,nnusigma2,nu-2) - pent(a,mu,nnusigma2,nu-2) + ifelse(a==-Inf,0,a*ta) - ifelse(b==Inf,0,b*tb))
-      return(list(mean = F1/F0,EYY = F2/F0,varcov = F2/F0 - (F1/F0)^2))
-    }
-    GB = GenzBretz(maxpts = (p-1)*1e4, abseps = 1e-6, releps = 0)
-    #print(GB$maxpts)
-    F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma, algorithm = GB)[1]
-    F0nnu = pmvt(lower = a-mu,upper = b-mu,df = nu - 2,sigma = nnu*Sigma, algorithm = GB)[1]
-
-    #Vectors ca and cb
-    SSigma  = nnu*Sigma
-    ssigma2 = diag(SSigma)
-    ca = cb = a0 = a1 = rep(0,p)
-    deltaA  = (nu - 2 + ((a - mu)^2)/diag(SSigma))/(nu - 1)
-    deltaB  = (nu - 2 + ((b - mu)^2)/diag(SSigma))/(nu - 1)
-    yA      = (a - mu)/diag(SSigma)
-    yB      = (b - mu)/diag(SSigma)
-
-    Wa = Wb = matrix(0,p,p)
-
-    for(j in 1:p)
-    {
-      #W matrix construction
-
-      if(a[j]!=-Inf){
-        aux1     = onlymeanT(a = a[-j],b = b[-j],mu = mu[-j] + yA[j]*SSigma[,j][-j],Sigma = deltaA[j]*(SSigma[-j,-j] - SSigma[,j][-j]%*%t(SSigma[j,][-j])/ssigma2[j]),nu = nu-1)
-        ca[j]    = dent(a[j],mu[j],ssigma2[j],nu-2)*aux1$F00
-        Wa[-j,j] = aux1$muY
-        Wa[j,j]  = a[j]
+meanvarTall = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,Sigma,nu,omega = FALSE){
+  
+  p = length(mu)
+  
+  if(p == 1){
+    
+    if(nu >= 3){
+      
+      return(meanvarT16(a = lower,b = upper,mu = mu,Sigma = Sigma,nu=nu,omega))
+      
+    }else{
+      
+      if(omega){
+        
+        if(lower < mu & mu < upper & nu%%1 == 0){
+          
+          return(MCT(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,algo = "rejection",omega = omega))
+          
+        }else{
+          
+          return(MCT.lin(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,omega = omega))
+          
+        }
+        
+      }else{
+        
+        if(lower < mu & mu < upper & nu%%0 == 1){
+          
+          return(MCT(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu))
+          
+        }else{
+          
+          return(dtmvtmuvar(a = lower,b = upper,mu = mu,S = Sigma,nu=nu))
+          
+        }
+        
       }
-      if(b[j]!= Inf){
-        aux2     = onlymeanT(a = a[-j],b = b[-j],mu = mu[-j] + yB[j]*SSigma[,j][-j],Sigma = deltaB[j]*(SSigma[-j,-j] - SSigma[,j][-j]%*%t(SSigma[j,][-j])/ssigma2[j]),nu = nu-1)
-        cb[j]    = dent(b[j],mu[j],ssigma2[j],nu-2)*aux2$F00
-        Wb[-j,j] = aux2$muY
-        Wb[j,j]  = b[j]
-      }
+      
     }
-    muY  = mu + SSigma%*%(ca - cb)/F0
-    Exx  = muY%*%t(mu) +  (F0nnu*diag(p) + Wa%*%diag(ca) - Wb%*%diag(cb))%*%SSigma/F0
-    varY = Exx - muY%*%t(muY)
-    varY = (varY + t(varY))/2
-    return(list(mean = muY,EYY = Exx,varcov = varY))
-  }else{
-    p = length(mu)
-    nnu = nu/(nu-2)
-    if(p==1){
-      F0 = pent(b,mu,Sigma,nu) - pent(a,mu,Sigma,nu)
-      ta = dent(a,mu,nnu*Sigma,nu-2)
-      tb = dent(b,mu,nnu*Sigma,nu-2)
-      F1 = mu*F0 + nnu*Sigma*(ta-tb)
-      return(list(mean = round(F1/F0,4),EYY = NA,varcov = NA))
-    }
-    GB = GenzBretz(maxpts = p*1e4, abseps = 1e-6, releps = 0)
-    #print(GB$maxpts)
-    F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma, algorithm = GB)[1]
-
-    #Vectors ca and cb
-    SSigma  = nnu*Sigma
-    ssigma2 = diag(SSigma)
-    ca = cb = a0 = a1 = rep(0,p)
-    deltaA  = (nu - 2 + ((a - mu)^2)/diag(SSigma))/(nu - 1)
-    deltaB  = (nu - 2 + ((b - mu)^2)/diag(SSigma))/(nu - 1)
-    yA      = (a - mu)/diag(SSigma)
-    yB      = (b - mu)/diag(SSigma)
-
-    for(j in 1:p)
-    {
-      if(a[j]!=-Inf){
-        ca[j] = dent(a[j],mu[j],ssigma2[j],nu-2)*pmvt(lower = a[-j] - (mu[-j] + yA[j]*SSigma[,j][-j]),upper = b[-j] - (mu[-j] + yA[j]*SSigma[,j][-j]),df = nu - 1,sigma = deltaA[j]*(SSigma[-j,-j] - SSigma[,j][-j]%*%t(SSigma[j,][-j])/ssigma2[j]), algorithm = GB)[1]
-      }
-      if(b[j]!= Inf){
-        cb[j] = dent(b[j],mu[j],ssigma2[j],nu-2)*pmvt(lower = a[-j] - (mu[-j] + yB[j]*SSigma[,j][-j]),upper = b[-j] - (mu[-j] + yB[j]*SSigma[,j][-j]),df = nu - 1,sigma = deltaB[j]*(SSigma[-j,-j] - SSigma[,j][-j]%*%t(SSigma[j,][-j])/ssigma2[j]), algorithm = GB)[1]
-      }
-    }
-    muY  = mu + SSigma%*%(ca - cb)/F0
-    return(list(mean = muY,EYY = matrix(NA,p,p),varcov = matrix(NA,p,p)))
+    
   }
+  
+  
+  #Multivariate
+  ###########################################################################################################################
+  
+  bool1 = is.infinite(lower)
+  bool2 = is.infinite(upper)
+  
+  if(sum(bool1*bool2) > 0){ #Does exist infinite pairs?
+    
+    if(sum(bool1*bool2) == p){ #All infinites?
+      
+      if(nu > 2){
+        
+        varcov = nu/(nu-2)*Sigma
+        EYY = varcov + mu%*%t(mu)
+        
+        return(list(mean = mu,EYY = EYY,varcov = varcov))
+        
+      }else{
+        
+        return(list(mean = mu,EYY = matrix(NaN,p,p),varcov = matrix(NaN,p,p)))
+        
+      }
+      
+    }else{
+      
+      return(withinfsT(lower,upper,mu,Sigma,nu))
+      
+    }
+  }
+  
+  
+  if(nu > 4){
+    
+    #Lin algorithm: TTmoment package
+    
+    if(sum(bool1) + sum(bool2) == 0){ #All limits are finite?
+      
+      return(meanvarT.Lin.IC(a = lower,b = upper,mu = mu,S = Sigma,nu=nu,omega))
+      
+    }else{
+      
+      if(sum(bool1) == p){ #All lower limits are infinite?
+        
+        
+        if(sum(bool2) == p){ #All lower and upper limits are infinite?
+          
+          #NO TRUNCATION
+          
+          varcov = nu/(nu-2)*Sigma
+          return(list(mean = mu,EYY = varcov + mu%*%t(mu),varcov = varcov))
+          
+        }else{
+          
+          #LEFT CENSORING
+          
+          return(meanvarT.Lin.RC(b = upper,mu = mu,S = Sigma,nu=nu,omega))
+        }
+        
+      }else{
+        
+        if(sum(bool2) == p){ #All upper limits are infinite?
+          
+          #RIGHT TRUNCATION
+          
+          return(meanvarT.Lin.LC(a = lower,mu = mu,S = Sigma,nu=nu,omega))
+          
+        }else{
+          
+          #All kind of censoring
+          
+          return(meanvarT.Lin.LRIC(a = lower,b = upper,mu = mu,S = Sigma,nu=nu,omega))
+          
+        }
+        
+      }
+      
+    }
+    
+  }
+  
+  ###########################################################################################################################
+  
+  if(nu >= 3){
+    
+    #Galarza et.al. algorithm: T paper
+    
+    if(sum(bool1) + sum(bool2) == 0){ #All limits are finite?
+      
+      return(meanvarT16_finite(a = lower,b = upper,mu = mu,Sigma = Sigma,nu=nu,omega))
+      
+    }else{
+      
+      if(sum(bool1) == p){ #All lower limits are infinite?
+        
+        
+        if(sum(bool2) == p){ #All lower and upper limits are infinite?
+          
+          #NO TRUNCATION
+          
+          varcov = nu/(nu-2)*Sigma
+          return(list(mean = mu,EYY = varcov + mu%*%t(mu),varcov = varcov))
+          
+        }else{
+          
+          #LEFT CENSORING
+          
+          return(meanvarT16_upper(b = upper,mu = mu,Sigma = Sigma,nu=nu,omega))
+        }
+        
+      }else{
+        
+        if(sum(bool2) == p){ #All upper limits are infinite?
+          
+          #RIGHT TRUNCATION
+          
+          return(meanvarT16_lower(a = lower,mu = mu,Sigma = Sigma,nu=nu,omega))
+          
+        }else{
+          
+          #All kind of censoring
+          
+          return(meanvarT16(a = lower,b = upper,mu = mu,Sigma = Sigma,nu=nu,omega))
+          
+        }
+        
+      }
+      
+    }
+    
+  }
+  
+  ###########################################################################################################################
+  
+  #nu < 3
+  
+  #Kan method
+  
+  if(omega){
+    
+    #given that we need omega estimation, we must run MC for these cases
+    
+    if(all(lower < mu) & all(mu < upper) & nu%%1 == 0){
+      
+      return(MCT(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,algo = "rejection",omega = omega))
+      
+    }else{
+      
+      return(MCT.lin(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,omega = omega))
+      
+    }
+    
+  }else{
+    
+    if(sum(bool1) + sum(bool2) == 0){ #All limits are finite?
+      
+      return(ftmvtmuvar(a = lower,b = upper,mu = mu,S = Sigma,nu=nu))
+      
+    }else{
+      
+      if(sum(bool1) == p){ #All lower limits are infinite?
+        
+        
+        if(sum(bool2) == p){ #All lower and upper limits are infinite?
+          
+          #NO TRUNCATION
+          
+          varcov = nu/(nu-2)*Sigma
+          return(list(mean = mu,EYY = varcov + mu%*%t(mu),varcov = varcov))
+          
+        }else{
+          
+          #LEFT CENSORING
+          
+          return(utmvtmuvar(b = upper,mu = mu,S = Sigma,nu=nu))
+        }
+        
+      }else{
+        
+        if(sum(bool2) == p){ #All upper limits are infinite?
+          
+          #RIGHT TRUNCATION
+          
+          return(ltmvtmuvar(a = lower,mu = mu,S = Sigma,nu=nu))
+          
+        }else{
+          
+          #All kind of censoring
+          
+          return(dtmvtmuvar(a = lower,b = upper,mu = mu,S = Sigma,nu=nu))
+          
+        }
+        
+      }
+      
+    }
+    
+  }
+  
 }

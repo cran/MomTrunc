@@ -1,19 +1,28 @@
-\name{drmvSN}
+\name{dprmvSN}
 \alias{dmvSN}
+\alias{pmvSN}
 \alias{rmvSN}
-\title{Multivariate Skew Normal Density and Random Deviates}
+\title{Multivariate Skew Normal Density and Probabilities and Random Deviates}
 \description{
   These functions provide the density function and a random number
-  generator for the multivariate skew normal (SN) distribution with mean vector \eqn{mu}, scale matrix \eqn{sigma} and skewness parameter \eqn{lambda}.
+  generator for the multivariate skew normal (SN) distribution with mean vector \code{mu}, scale matrix \code{Sigma} and skewness parameter \code{lambda}.
 }
 \usage{
 dmvSN(x,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda)
+pmvSN(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda)),
+        mu = rep(0,length(lambda)),Sigma,lambda,log2 = FALSE)
 rmvSN(n,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda)
 }
 \arguments{
    \item{x}{vector or matrix of quantiles. If \code{x} is a matrix, each
      row is taken to be a quantile.}
    \item{n}{number of observations.}
+    \item{lower}{
+the vector of lower limits of length \eqn{p}.
+}
+\item{upper}{
+the vector of upper limits of length \eqn{p}.
+}
    \item{mu}{
   a numeric vector of length \eqn{p} representing the location parameter.
   }
@@ -23,10 +32,19 @@ rmvSN(n,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda)
   \item{lambda}{
   a numeric vector of length \eqn{p} representing the skewness parameter for SN and SN cases. If \code{lambda == 0}, the SN/SN reduces to a normal (symmetric) distribution.
   }
+      \item{log2}{
+  a boolean variable, indicating if the log2 result should be returned. This is useful when the true probability is too small for the machine precision.
+  }
 }
 
 \references{
-C.E. Galarza, L.A. Matos, D.K. Dey & V.H. Lachos. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut.
+Cao, J., Genton, M. G., Keyes, D. E., & Turkiyyah, G. M. (2019) "Exploiting Low
+	Rank Covariance Structures for Computing High-Dimensional Normal and Student-
+	t Probabilities" <\url{https://marcgenton.github.io/2019.CGKT.manuscript.pdf}>.
+	
+Galarza C.E., Matos L.A., Dey D.K. & Lachos V.H. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut <\url{https://stat.uconn.edu/tech-reports-2019/}>.
+
+Genz, A., "Numerical computation of multivariate normal probabilities," Journal of Computational and Graphical Statistics, 1, 141-149 (1992) <doi:10.1080/10618600.1992.10477010>.
 }
 
 \author{Christian E. Galarza <\email{cgalarza88@gmail.com}> and
@@ -37,7 +55,7 @@ Maintainer: Christian E. Galarza <\email{cgalarza88@gmail.com}>
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \seealso{
-\code{\link{pmvESN}}, \code{\link{meanvarFMD}},\code{\link{meanvarTMD}},\code{\link{momentsTMD}}
+\code{\link{dmvESN}}, \code{\link{pmvESN}}, \code{\link{rmvESN}}, \code{\link{meanvarFMD}},\code{\link{meanvarTMD}},\code{\link{momentsTMD}}
 }
 \examples{
 #Univariate case
@@ -54,6 +72,10 @@ rmvSN(n = 100,mu,Sigma,lambda)
 #Many observations as matrix
 x = matrix(rnorm(4*10),ncol = 4,byrow = TRUE)
 dmvSN(x = x,mu,Sigma,lambda)
+
+lower = rep(-Inf,4)
+upper = c(-1,0,2,5)
+pmvSN(lower,upper,mu,Sigma,lambda)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

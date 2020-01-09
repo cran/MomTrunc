@@ -27,7 +27,7 @@ meanvarFT = function(mu,Sigma,nu)
       r   = R[i,j]
       eta = sqrt(1 - r^2)
       Sigma   = matrix(data = c(1,r,r,1),nrow = 2,ncol = 2)
-      pmt = pmvt(lower=-Inf, upper=c(h[i],h[j]),df=nu,corr=Sigma,algorithm = TVPACK)[1]
+      pmt = pmvt.genz(lower=-Inf, upper=c(h[i],h[j]),nu=nu,sigma=Sigma)[[1]]
       p   = 4*pmt - c1[i] - c1[j] - 1
       zij = sqrt(nu-1)*(h[i]-r*h[j])/eta/sqrt(nu+h[j]^2)
       zji = sqrt(nu-1)*(h[j]-r*h[i])/eta/sqrt(nu+h[i]^2)

@@ -40,7 +40,7 @@ recintab = function(kappa,a,b,mu,Sigma)
     s1 = sqrt(Sigma)
     aa = (a-mu)/s1
     bb = (b-mu)/s1
-    M[1] = pnorm(bb)-pnorm(aa)
+    M[1] = pnorm2(bb)-pnorm(aa)
     if(kappa>0)
     {
       pdfa = s1*dnorm(aa)
@@ -101,7 +101,7 @@ recintab = function(kappa,a,b,mu,Sigma)
         H[ind] = pdfb[i]*recintab(kappai,ai,bi,mbi,SSi)
       }
     }
-    M[1] = pmvnorm(lower=a, upper=b, mean=mu,sigma = Sigma)
+    M[1] = pmvn.genz(lower=a, upper=b, mean=mu,sigma = Sigma)$Estimation
     a[a == -Inf] = 0
     b[b == Inf] = 0
     cp1 = cp[n,]

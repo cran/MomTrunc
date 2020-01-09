@@ -16,3 +16,49 @@ onlymeanN = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,Sig
   }
   return(out)
 }
+
+
+
+###############################################################################################
+###############################################################################################
+#This function is optimized for the case when it DOES exist infinite values in the lower/upper
+#truncation limits
+###############################################################################################
+###############################################################################################
+
+Vaida.LRIC.onlymean<-function(a=rep(-Inf,length(mu)),b=rep(Inf,length(mu)),mu,Sigma){
+  p=length(mu)
+  if(p==1){
+    return(onlymeanNuni(a,b,mu,Sigma))
+  }else{
+    #####
+    Sigma = sym.matrix(Sigma)
+    #####
+    a1 <- (a-mu)/sqrt(diag(Sigma))
+    b1 <- (b-mu)/sqrt(diag(Sigma))
+    R <-  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
+
+    logp <- pmvn.genz(lower = as.vector(a1),upper=as.vector(b1),sigma=R,uselog2 = TRUE)[[1]]
+    prob = 2^logp
+    if(prob > 1e-50){
+      #no problems, so we run the Rcpp model
+      return(RcpponlymeanN(a,b,mu,Sigma,prob))
+    }
+    if(prob < 1e-100){
+      #print("LRIC.Vaida corrector applied \n")
+      return(corrector_onlymean(lower = a,upper = b,mu = mu,Sigma = Sigma,bw=36))
+    }
+    #mean
+    qq = ifelse(p<10,Rcppqfun(a1,b1,R),qfun(a1,b1,R))
+    da = as.vector(qq$qa)
+    db = as.vector(qq$qb)
+    #EX <- -R%*%(da - db)/2^logp   # a vector with a length of p
+    EX <- -R%*%log2ratio(da - db,logp)
+    Eycens <- -diag(sqrt(diag(Sigma)))%*%EX+mu
+    if(max(abs(Eycens))> 10*max(abs(c(a,b)[is.finite(c(a,b))])) | any(Eycens < a | Eycens > b)){
+      #print("LRIC.Vaida corrector applied \n")
+      return(corrector_onlymean(lower = a,upper = b,mu = mu,Sigma = Sigma,bw=36))
+    }
+  }
+  return(list(mean=Eycens))
+}

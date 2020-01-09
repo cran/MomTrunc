@@ -27,12 +27,12 @@ select = function(a,b,mu,s){
 #######################################################################################
 #######################################################################################
 
-pnorm2 = function(lower = -Inf,upper = Inf,mean = 0,sd = 1){
-  if(lower == -Inf){
-    return(pnorm(upper,mean = mean,sd = sd))
+pnorm2 = function(lower = -Inf,upper = Inf,mean = 0,sd = 1,...){
+  if(all(lower == -Inf)){
+    return(pnorm(upper,mean = mean,sd = sd,...))
   }else{
-    if(upper == Inf){
-      return(pnorm(lower,mean = mean,sd = sd,lower.tail = FALSE))
+    if(all(upper == Inf)){
+      return(pnorm(lower,mean = mean,sd = sd,lower.tail = FALSE,...))
     }else{
       return(pnorm(upper,mean = mean,sd = sd) - pnorm(lower,mean = mean,sd = sd))
     }
@@ -64,28 +64,6 @@ sqrtm <- function(A)
   return(as.matrix(Asqrt))
 }
 
-#######################################################################################
-#######################################################################################
-
-dmvESN1 <- function(y, mu=0, Sigma=1, lambda,tau){
-  #y: deve ser uma matrix onde cada linha tem um vetor de dados multivariados de dimens?o ncol(y) = p. nrow(y) = tamanho da amostra
-  #mu, lambda: devem ser do tipo vetor de mesma dimens?o igual a ncol(y) = p
-  #Sigma: Matrix p x p
-  n <- length(c(y))
-  p <- 1
-  s = sqrt(Sigma)
-  tautil = tau/sqrt(1+sum(lambda^2))
-  if(tautil< -35){
-    #print("normal aproximation")
-    Gamma  = Sigma/(1+lambda^2)
-    mub    = lambda*tau*Gamma/s
-    return(dnorm(y,mu-mub,sqrt(Gamma)))
-  }
-  dens <- dnorm(x = c(y),mean = c(mu),sd = sqrt(Sigma))*
-    pnorm(apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
-                  (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau)/pnorm(tautil)
-  return(dens)
-}
 
 #######################################################################################
 #######################################################################################
@@ -123,5 +101,9 @@ AcumESN<-function(y=c(1,1),mu=c(0,0),Sigma=diag(2),lambda=c(2,-1),tau=1){
 
 invmills = function(x,mu=0,sd=1){
   z = (x-mu)/sd
-  if(z < -37.5){return(-z/sd)}else{return(dnorm(x,mu,sd)/pnorm2(upper = x,mean = mu,sd = sd))}
+  if(z < -1e4){
+    return(-z/sd)
+  }else{
+    return(exp(dnorm(x,mu,sd,log = TRUE) - pnorm(q = x,mean = mu,sd = sd,log.p = TRUE)))
+  }
 }
