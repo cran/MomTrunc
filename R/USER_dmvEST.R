@@ -10,7 +10,7 @@ dmvEST = function(x,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda,t
     }
     if(all(lambda==0)){
       warning("Lambda = 0, t case is considered.",immediate. = TRUE)
-      return(dmvt(x = x,delta = c(mu),sigma = as.matrix(Sigma),df = nu,type = "shifted"))
+      return(dmvt(x = x,delta = c(mu),sigma = as.matrix(Sigma),df = nu,type = "shifted",log = FALSE))
     }
   }
   if(is.null(tau)){
@@ -27,7 +27,7 @@ dmvEST = function(x,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda,t
       Gamma = Sigma - Delta%*%t(Delta)
       rownames(Gamma) <- colnames(Gamma)
       omega_tau = (nu+tautil^2)/(nu+1)
-      return(dmvt(x = x,delta = c(mu - tautil*Delta),sigma = omega_tau*Gamma,df = nu+1,type = "shifted"))
+      return(dmvt(x = x,delta = c(mu - tautil*Delta),sigma = omega_tau*Gamma,df = nu+1,type = "shifted",log = FALSE))
     }
     return(dmvEST0(x,mu,Sigma,lambda,tau,nu))
   }
@@ -47,7 +47,7 @@ dmvEST0 <- function(y, mu, Sigma, lambda,tau,nu){
   n <- nrow(y)
   p <- ncol(y)
   tautil<-tau/sqrt(1+sum(lambda^2))
-  dens <- dmvt(x = y,delta = c(mu),sigma = Sigma,df = nu,type = "shifted")*exp(
+  dens <- dmvt(x = y,delta = c(mu),sigma = Sigma,df = nu,type = "shifted",log = FALSE)*exp(
     pt(apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
                (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau,df = nu+p,log.p = TRUE) - pt(tautil,nu,log.p = TRUE))
   return(dens)
@@ -76,5 +76,3 @@ dmvEST1 <- function(y, mu=0, Sigma=1, lambda,tau,nu){
                (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau,df = nu+1,log.p = TRUE) - pt(tautil,nu,log.p = TRUE))
   return(dens)
 }
-
-

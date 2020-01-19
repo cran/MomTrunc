@@ -5,12 +5,13 @@ importFrom("tlrmvnmvt","pmvn.genz","pmvt.genz")
 importFrom("stats", "dnorm", "dt", "pnorm", "pt","rnorm","integrate","rgamma","mahalanobis", "var","qt","runif")
 importFrom("tmvtnorm", "rtmvnorm", "rtmvt")
 importFrom("hypergeo","genhypergeo")
-export(dmvSN,pmvSN,rmvSN,
+export(
+        #Kan.LRIC,RcppmeanvarN,Vaida.LRIC,
+        dmvSN,pmvSN,rmvSN,
        dmvST,pmvST,rmvST,
        dmvESN,pmvESN,rmvESN,
        dmvEST,pmvEST,rmvEST,
        onlymeanTMD,meanvarTMD,momentsTMD,
        meanvarFMD,momentsFMD,cdfFMD)
-#RcpponlymeanN,RcppmeanvarN,RcppmeanvarN_b,RcppmeanvarN_ab,
 #  Fpmvt_cpp,pmvt_cpp,
 #  Rcppqfun,Rcppqfun_b,Rcppqfun_ab,

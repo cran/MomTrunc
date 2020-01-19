@@ -37,8 +37,8 @@ Vaida.LRIC.onlymean<-function(a=rep(-Inf,length(mu)),b=rep(Inf,length(mu)),mu,Si
     a1 <- (a-mu)/sqrt(diag(Sigma))
     b1 <- (b-mu)/sqrt(diag(Sigma))
     R <-  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
-
-    logp <- pmvn.genz(lower = as.vector(a1),upper=as.vector(b1),sigma=R,uselog2 = TRUE)[[1]]
+    
+    logp <- prob_opt(lower = as.vector(a1),upper=as.vector(b1),sigma=R,uselog2 = TRUE)
     prob = 2^logp
     if(prob > 1e-50){
       #no problems, so we run the Rcpp model

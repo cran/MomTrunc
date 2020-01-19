@@ -16,15 +16,18 @@ Kan.IC = function(a,b,mu,Sigma){
   Sigma = sym.matrix(Sigma)
   #####
 
-  logp = pmvn.genz(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)$Estimation
+  logp = prob_opt(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)
+  
   prob = 2^logp
-  if(prob > 1e-50){
-    #no problems, so we run the Rcpp model
-    #print("no problems")
-    return(RcppmeanvarN_ab(a,b,mu,Sigma,prob))
-  }
+  # if(prob > 1e-50){
+  #   #no problems, so we run the Rcpp model
+  #   #print("no problems")
+  #   print("Rcpp")
+  #   return(RcppmeanvarN_ab(a,b,mu,Sigma,prob))
+  # }
   
   if(prob < 1e-250){
+    #print("corrector")
     #print("LRIC.Kan corrector applied \n")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
@@ -37,6 +40,7 @@ Kan.IC = function(a,b,mu,Sigma){
 
   if(max(abs(muY))> 10*max(abs(c(a,b)[is.finite(c(a,b))]))| any(muY < a | muY > b)){
     #print("IC.Kan mean corrector applied 2 \n")
+    #print("corrector")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
 
@@ -63,6 +67,9 @@ Kan.IC = function(a,b,mu,Sigma){
 
   bool = diag(varY) < 0
   if(sum(bool)>0){
+    
+    #print("corrector")
+    
     #print("negative variance found")
     out = corrector(a,b,mu,Sigma,bw=36)
     out$mean = muY
@@ -91,14 +98,16 @@ Kan.LRIC = function(a,b,mu,Sigma){
   Sigma = sym.matrix(Sigma)
   #####
 
-  logp = pmvn.genz(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)$Estimation
+  logp = prob_opt(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)
   prob = 2^logp
-  if(prob > 1e-50){
-    #no problems, so we run the Rcpp model
-    return(RcppmeanvarN(a,b,mu,Sigma,prob))
-  }
+  # if(prob > 1e-50){
+  #   #no problems, so we run the Rcpp model
+  #   print("Rcpp")
+  #   return(RcppmeanvarN(a,b,mu,Sigma,prob))
+  # }
   
   if(prob < 1e-250){
+    #print("corrector")
     #print("LRIC.Kan corrector applied \n")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
@@ -110,6 +119,7 @@ Kan.LRIC = function(a,b,mu,Sigma){
   muY = mu+ Sigma%*%log2ratio(q,logp)
 
   if(max(abs(muY))> 10*max(abs(c(a,b)[is.finite(c(a,b))])) | any(muY < a | muY > b)){
+    #print("corrector")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
 
@@ -151,6 +161,7 @@ Kan.LRIC = function(a,b,mu,Sigma){
   #Validating positive variances
   bool = diag(varY) < 0
   if(sum(bool)>0){
+    #print("corrector")
     #print("negative variance found")
     out = corrector(a,b,mu,Sigma,bw=36)
     out$mean = muY
@@ -177,15 +188,17 @@ Kan.RC = function(b,mu,Sigma){
   Sigma = sym.matrix(Sigma)
   #####
 
-  logp = pmvn.genz(upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)$Estimation
+  logp = prob_opt(upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)
   
   prob = 2^logp
-  if(prob > 1e-50){
-    #no problems, so we run the Rcpp model
-    return(RcppmeanvarN_b(b,mu,Sigma,prob))
-  }
+  # if(prob > 1e-50){
+  #   #no problems, so we run the Rcpp model
+  #   print("Rcpp")
+  #   return(RcppmeanvarN_b(b,mu,Sigma,prob))
+  # }
   
   if(prob < 1e-250){
+    #print("corrector")
     #print("LRIC.Kan corrector applied \n")
     return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
   }
@@ -194,6 +207,7 @@ Kan.RC = function(b,mu,Sigma){
   muY = mu - Sigma%*%log2ratio(qb,logp)
 
   if(max(abs(muY))> 10*max(abs(b[is.finite(b)])) | any(muY > b)){
+    #print("corrector")
     return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
   }
 
@@ -213,6 +227,7 @@ Kan.RC = function(b,mu,Sigma){
   #Validating positive variances
   bool = diag(varY) < 0
   if(sum(bool)>0){
+    #print("corrector")
     #print("negative variance found")
     out = corrector(upper = b,mu = mu,Sigma = Sigma,bw=36)
     out$mean = muY

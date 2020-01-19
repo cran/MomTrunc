@@ -13,7 +13,6 @@
 using namespace Rcpp;
 using namespace arma;
 
-
 //[[Rcpp::export]]
 arma::vec triangl(const arma::mat& X){
   int n = X.n_cols;
@@ -165,7 +164,7 @@ arma::colvec rep_times(const arma::colvec& u, int times){
 
 //*************************************************************************
 //VECTORIZED EXPONENCIALIZATION
-NumericVector vecpow(const NumericVector base, const IntegerVector exp){
+NumericVector vecpow(const NumericVector base, const NumericVector exp){
   Rcpp::NumericVector out(base.size());
   std::transform(base.begin(), base.end(),
                  exp.begin(), out.begin(), ::pow);
@@ -905,7 +904,14 @@ arma::vec ifunrec02(int k, arma::vec mu, arma::mat S, double nu){
       if(nu<=i){break;}
       y(i) = ((nu+1-2*i)*mu2*y(i-1)+(i-1)*(pow(mu2,2)+nu)*y(i-2))/(nu-i);
     }
-    y = y%Rcpp::as<arma::colvec>(vecpow(rep(s,k+1),seq(0,k)));
+    
+    NumericVector base1 = Rcpp::wrap(rep(s,k+1));
+    IntegerVector exp1 = seq_len(k+1);
+    exp1 = exp1 - 1;
+    NumericVector exp2  = as<NumericVector>(exp1);
+    
+    
+    y = y%Rcpp::as<arma::colvec>(vecpow(base1,exp2));
     return y;
   }
   arma::mat Cp1(n+k+1,1,arma::fill::ones);
@@ -1294,7 +1300,16 @@ Rcpp::List ifunrec2(int k, arma::vec mu, arma::mat S, double nu){
       if(nu<=i){break;}
       y(i) = ((nu+1-2*i)*mu2*y(i-1)+(i-1)*(pow(mu2,2)+nu)*y(i-2))/(nu-i);
     }
-    y = y%Rcpp::as<arma::colvec>(vecpow(rep(s,k+1),seq(0,k)));
+    
+    NumericVector base1 = Rcpp::wrap(rep(s,k+1));
+    IntegerVector exp1 = seq_len(k+1);
+    exp1 = exp1 - 1;
+    NumericVector exp2  = as<NumericVector>(exp1);
+    
+    y = y%Rcpp::as<arma::colvec>(vecpow(base1,exp2));
+    
+    //y = y%Rcpp::as<arma::colvec>(vecpow(rep(s,k+1),seq(0,k)));
+    
     out["index"] = index;
     out["y"] = y;
     return out;
@@ -1411,7 +1426,8 @@ Rcpp::List RcppmeanvarFN(arma::vec mu,arma::mat S){
   Rcpp::NumericVector h = Rcpp::wrap(mu/s);
   arma::colvec pdfh = Rcpp::dnorm(h);
   arma::colvec cdfh = Rcpp::pnorm(h);
-  arma::colvec erfv = erf(Rcpp::as<arma::mat>(h)/sqrt(2));
+  double dos = 2;
+  arma::colvec erfv = erf(Rcpp::as<arma::mat>(h)/sqrt(dos));
   muY = s%(2*pdfh + Rcpp::as<arma::mat>(h)%erfv);
   arma::mat R = S%(1/(s * s.t()));
   
@@ -1462,7 +1478,9 @@ Rcpp::List RcppmomentsFN(arma::vec kappa, arma::vec mu, arma::mat S){
   b.fill(arma::datum::inf);
   out = recintab1(kappa,a,b,mu,S);
   arma::vec M = out[1];
-  for(int i=0; i<=pow(2,n)-2; ++i){
+  double dos = 2;
+  double ene = n;
+  for(int i=0; i<=pow(dos,ene)-2; ++i){
     arma::rowvec ind1 = DecToSigns(i,n);
     M += recintab0(kappa,a,b,mu%ind1.t(),S%(ind1.t()*ind1));
   }

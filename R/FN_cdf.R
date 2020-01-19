@@ -6,7 +6,7 @@ cdfFN = function(x,mu,Sigma)
     return(pnorm2(-x,x,mu,sqrt(Sigma)))
   }else
   {
-    return(pmvn.genz(lower = -x-mu,upper = x-mu,sigma = Sigma)$Estimation)
+    return(prob_opt(lower = -x-mu,upper = x-mu,sigma = Sigma))
   }
 }
 

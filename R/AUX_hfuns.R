@@ -422,8 +422,8 @@ htmuk = function(i,k,a,b,mu,S,nu){
     if(n1>0){
       mut = c*x
       d = sqrt((1+x^2)/(nu+1))
-      #y1 = y1*pmvt(lower = (a1-mut)/(d*s0),upper = (b1-mut)/(d*s0),df = nu+1,corr = R)[1]
-      y1 = y1*0.5
+      y1 = y1*pmvt(lower = (a1-mut)/(d*s0),upper = (b1-mut)/(d*s0),df = nu+1,corr = R)[1]
+      #y1 = y1*0.5
     }
   }
   faux1 = function(xp){

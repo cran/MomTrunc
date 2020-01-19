@@ -1,5 +1,13 @@
 #######################################################################################
 #######################################################################################
+lower=c(-10,-10)
+upper = c(10,10)
+Sigma=matrix(c(1, -0.5, -0.5, 1), 2, 2)
+lambda = c(1/2,-1/2)
+tau = 1
+nu = 4
+
+
 
 pmvEST = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda)),mu = rep(0,length(lambda)),Sigma,lambda,tau,nu,log2 = FALSE){
   tautil<-tau/sqrt(1+sum(lambda^2))
@@ -24,8 +32,8 @@ pmvEST = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda))
   rownames(Omega) <- colnames(Omega)
 
   if(log2 == TRUE){
-    return(prob_opt(lower = aaum,upper = baum,sigma = Omega,nu = nu+1,uselog2 = TRUE) - pt(tautil,nu,log.p = TRUE)/log(2))
+    return(min(prob_opt(lower = aaum,upper = baum,sigma = Omega,nu = nu+1,uselog2 = TRUE) - pt(tautil,nu,log.p = TRUE)/log(2),0))
   }else{
-    return(prob_opt(lower = aaum,upper = baum,sigma = Omega,nu = nu+1)/pt(tautil,nu))
+    return(min(prob_opt(lower = aaum,upper = baum,sigma = Omega,nu = nu+1)/pt(tautil,nu),1))
   }
 }

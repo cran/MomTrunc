@@ -2,8 +2,8 @@ Package: MomTrunc
 Type: Package
 Title: Moments of Folded and Doubly Truncated Multivariate
         Distributions
-Version: 5.57
-Date: 2020-01-08
+Version: 5.63
+Date: 2020-01-10
 Author: Christian E. Galarza, Raymond Kan and Victor H. Lachos
 Maintainer: Christian E. Galarza <cgalarza88@gmail.com>
 Description: It computes arbitrary products moments (mean vector and variance-covariance matrix), for some double truncated (and folded) multivariate distributions. These distributions belong to the family of selection elliptical distributions, which includes well known skewed distributions as the unified skew-t distribution (SUT) and its particular cases as the extended skew-t (EST), skew-t (ST) and the symmetric student-t (T) distribution. Analogous normal cases unified skew-normal (SUN), extended skew-normal (ESN), skew-normal (SN), and symmetric normal (N) are also included. Density, probabilities and random deviates are also offered for these members.
@@ -15,6 +15,6 @@ Imports: Rcpp (>= 0.12.14), mvtnorm, tlrmvnmvt, hypergeo, tmvtnorm
 LinkingTo: Rcpp, RcppArmadillo, mvtnorm
 Suggests: TTmoment
 NeedsCompilation: yes
-Packaged: 2020-01-08 18:46:31 UTC; cgala
+Packaged: 2020-01-18 19:14:56 UTC; cgala
 Repository: CRAN
-Date/Publication: 2020-01-09 14:00:07 UTC
+Date/Publication: 2020-01-19 18:50:19 UTC
