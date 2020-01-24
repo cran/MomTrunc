@@ -6,6 +6,22 @@
 
 using namespace Rcpp;
 
+// TT_GS_sp
+arma::mat TT_GS_sp(arma::uword n, arma::mat R, double nu, arma::vec x, arma::vec lower, arma::vec upper);
+RcppExport SEXP _MomTrunc_TT_GS_sp(SEXP nSEXP, SEXP RSEXP, SEXP nuSEXP, SEXP xSEXP, SEXP lowerSEXP, SEXP upperSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uword >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type R(RSEXP);
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lower(lowerSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type upper(upperSEXP);
+    rcpp_result_gen = Rcpp::wrap(TT_GS_sp(n, R, nu, x, lower, upper));
+    return rcpp_result_gen;
+END_RCPP
+}
 // triangl
 arma::vec triangl(const arma::mat& X);
 RcppExport SEXP _MomTrunc_triangl(SEXP XSEXP) {
@@ -261,6 +277,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_MomTrunc_TT_GS_sp", (DL_FUNC) &_MomTrunc_TT_GS_sp, 6},
     {"_MomTrunc_triangl", (DL_FUNC) &_MomTrunc_triangl, 1},
     {"_MomTrunc_Fpmvt_cpp", (DL_FUNC) &_MomTrunc_Fpmvt_cpp, 4},
     {"_MomTrunc_pmvt_cpp", (DL_FUNC) &_MomTrunc_pmvt_cpp, 5},

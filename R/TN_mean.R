@@ -40,16 +40,13 @@ Vaida.LRIC.onlymean<-function(a=rep(-Inf,length(mu)),b=rep(Inf,length(mu)),mu,Si
     
     logp <- prob_opt(lower = as.vector(a1),upper=as.vector(b1),sigma=R,uselog2 = TRUE)
     prob = 2^logp
-    if(prob > 1e-50){
-      #no problems, so we run the Rcpp model
-      return(RcpponlymeanN(a,b,mu,Sigma,prob))
-    }
+    
     if(prob < 1e-100){
       #print("LRIC.Vaida corrector applied \n")
       return(corrector_onlymean(lower = a,upper = b,mu = mu,Sigma = Sigma,bw=36))
     }
     #mean
-    qq = ifelse(p<10,Rcppqfun(a1,b1,R),qfun(a1,b1,R))
+    qq = qfun(a1,b1,R)
     da = as.vector(qq$qa)
     db = as.vector(qq$qb)
     #EX <- -R%*%(da - db)/2^logp   # a vector with a length of p

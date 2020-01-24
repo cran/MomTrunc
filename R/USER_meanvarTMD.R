@@ -102,7 +102,7 @@ meanvarTMD = function(lower = rep(-Inf,length(mu)),upper = rep(Inf,length(mu)),m
           #validate input
           if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
           if(all(lambda==0)){
-            warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
+            #warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
             out = meanvarN7(lower = lower,upper = upper,mu = mu,Sigma = Sigma)
           }
         }

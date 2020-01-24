@@ -3,15 +3,17 @@ import(Rcpp)
 importFrom("mvtnorm","dmvnorm","dmvt","rmvnorm","rmvt","pmvnorm","pmvt","TVPACK")
 importFrom("tlrmvnmvt","pmvn.genz","pmvt.genz")
 importFrom("stats", "dnorm", "dt", "pnorm", "pt","rnorm","integrate","rgamma","mahalanobis", "var","qt","runif")
-importFrom("tmvtnorm", "rtmvnorm", "rtmvt")
 importFrom("hypergeo","genhypergeo")
 export(
-        #Kan.LRIC,RcppmeanvarN,Vaida.LRIC,
+        #  Kan.LRIC,RcppmeanvarN,Vaida.LRIC,
+        #  Fpmvt_cpp,pmvt_cpp,
+        #  Rcppqfun,Rcppqfun_b,Rcppqfun_ab,
+        #RcppMCT.lin,MCT.lin,
+        #RcppTT.GS,
+        MCmeanvarTMD,
         dmvSN,pmvSN,rmvSN,
        dmvST,pmvST,rmvST,
        dmvESN,pmvESN,rmvESN,
        dmvEST,pmvEST,rmvEST,
        onlymeanTMD,meanvarTMD,momentsTMD,
        meanvarFMD,momentsFMD,cdfFMD)
-#  Fpmvt_cpp,pmvt_cpp,
-#  Rcppqfun,Rcppqfun_b,Rcppqfun_ab,

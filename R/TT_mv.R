@@ -11,28 +11,13 @@ meanvarTall = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
     }else{
       
       if(omega){
-        
-        if(lower < mu & mu < upper & nu%%1 == 0){
-          
-          return(MCT(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,algo = "rejection",omega = omega))
-          
-        }else{
-          
-          return(MCT.lin(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,omega = omega))
-          
-        }
+
+          return(RcppMCT.lin(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,omega = omega))
+
         
       }else{
-        
-        if(lower < mu & mu < upper & nu%%0 == 1){
-          
-          return(MCT(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu))
-          
-        }else{
           
           return(dtmvtmuvar(a = lower,b = upper,mu = mu,S = Sigma,nu=nu))
-          
-        }
         
       }
       
@@ -181,16 +166,8 @@ meanvarTall = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
   if(omega){
     
     #given that we need omega estimation, we must run MC for these cases
-    
-    if(all(lower < mu) & all(mu < upper) & nu%%1 == 0){
       
-      return(MCT(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,algo = "rejection",omega = omega))
-      
-    }else{
-      
-      return(MCT.lin(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,omega = omega))
-      
-    }
+      return(RcppMCT.lin(n = 5000,a = lower,b = upper,mu = mu,S = as.matrix(Sigma),nu = nu,omega = omega))
     
   }else{
     

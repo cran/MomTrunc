@@ -4,6 +4,10 @@
 prob_opt = function(lower = rep(-Inf,ncol(sigma)),upper = rep(Inf,ncol(sigma)),mean = rep(0,ncol(sigma)),sigma,nu = NULL,uselog2 = FALSE){
   sigma = as.matrix(sigma)
   p = ncol(sigma)
+  
+  lower = c(lower)
+  upper = c(upper)
+  
   if(is.null(nu)){
     #normal case
     if(p < 10){

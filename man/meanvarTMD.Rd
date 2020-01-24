@@ -80,6 +80,7 @@ If \code{nu >= 300}, Normal case is considered."
 \section{Warning }{For the \eqn{t} cases, the algorithm supports degrees of freedom \code{nu <= 2}.}
 
 \seealso{
+\code{\link{MCmeanvarTMD}},
 \code{\link{momentsTMD}}, \code{\link{meanvarFMD}}, \code{\link{meanvarFMD}},\code{\link{momentsFMD}}, \code{\link{dmvSN}},\code{\link{pmvSN}},\code{\link{rmvSN}}, \code{\link{dmvESN}},\code{\link{pmvESN}},\code{\link{rmvESN}}, \code{\link{dmvST}},\code{\link{pmvST}},\code{\link{rmvST}}, \code{\link{dmvEST}},\code{\link{pmvEST}},\code{\link{rmvEST}}
 }
 \examples{
@@ -88,7 +89,13 @@ b = c(0.5,0.6,0.7)
 mu = c(0.1,0.2,0.3)
 Sigma = matrix(data = c(1,0.2,0.3,0.2,1,0.4,0.3,0.4,1),
                nrow = length(mu),ncol = length(mu),byrow = TRUE)
+
+# Theoretical value
 value1 = meanvarTMD(a,b,mu,Sigma,dist="normal")
+
+#MC estimate
+MC11 = MCmeanvarTMD(a,b,mu,Sigma,dist="normal") #by defalut n = 10000
+MC12 = MCmeanvarTMD(a,b,mu,Sigma,dist="normal",n = 10^5) #more precision
 
 # Now works for for any nu>0
 value2 = meanvarTMD(a,b,mu,Sigma,dist = "t",nu = 0.87)

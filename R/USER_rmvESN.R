@@ -44,9 +44,16 @@ rESN0<-function(n = 10000,mu=c(0,2),Sigma=diag(2),lambda=c(-1,3),tau=1){
   Omega1<- cbind(Sigma,-SS%*%varphi)
   Omega2<- cbind(-t(SS%*%varphi),1)
   Omega<- rbind(Omega1,Omega2)
-  algo = ifelse(pnorm(tautil)< 10^-3,"gibbs","rejection")
-  return(rtmvnorm(n = n,mean = c(mu,0),sigma = Omega,upper = c(rep(Inf,p),tautil),algorithm = algo)[,1:p])
+  #algo = ifelse(pnorm(tautil)< 10^-3,"gibbs","rejection")
+  return(RcppTT.GS(n=n,mu = c(mu,0),S = Omega,nu = 1000,upper=c(rep(Inf,p),tautil))[,1:p])
 }
+
+# gen0 = rtmvnorm(n = n,mean = c(mu,0),sigma = Omega,upper = c(rep(Inf,p),tautil),algorithm = algo)[,1:p]
+# colMeans(gen0)
+# 
+# gen1 = MomTrunc::RcppTT.GS(n=n,mu = c(mu,0),S = Omega,nu = 1000,upper=c(rep(Inf,p),tautil))[,1:p]
+# colMeans(gen1)
+
 
 # rmvSN = function(n,mu,Sigma,lambda){
 #   p = length(lambda)

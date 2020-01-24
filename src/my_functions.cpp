@@ -13,6 +13,48 @@
 using namespace Rcpp;
 using namespace arma;
 
+
+// [[Rcpp::export]]
+arma::mat TT_GS_sp(arma::uword n, arma::mat R, double nu, arma::vec x, arma::vec lower, arma::vec upper) {
+  arma::mat Rinv=R.i();
+  //  vec x=(lower+upper)/2;
+  uword p=R.n_cols;
+  double nup=nu+p;
+  mat X(n,p,fill::zeros);
+  umat minusj(p-1,p,fill::zeros);
+  for(uword j=0;j<p;j++){
+    uword k=0;
+    for(uword l=0;l<p;l++){
+      if(l!=j){
+        minusj(k,j)=l;
+        k++;
+      }
+    }
+  }
+  
+  for(uword i=0;i<n;i++){
+    double delta=as_scalar(x.t()*Rinv*x);
+    double y=arma::randu<double>()*exp(-nup*log(1+delta/nu)/2);
+    double kap = nu * (pow(y,-2/nup) - 1);
+    for(uword j=0;j<p;j++){
+      uvec pj=minusj.col(j);
+      vec xj=x(pj);
+      rowvec a1=xj.t()*Rinv.rows(pj);
+      double ss=as_scalar(a1.cols(pj)*xj);
+      double mj=-a1(j)/Rinv(j,j);
+      double tj=sqrt(mj*mj+(kap-ss)/Rinv(j,j));
+      double lv=(lower(j)<mj-tj)?(mj-tj):(lower(j));
+      double rv=(upper(j)<mj+tj)?(upper(j)):(mj+tj);
+      double xij=lv+(rv-lv)*arma::randu<double>();
+      X(i,j)=xij;
+      x(j)=xij;
+    }
+  }
+  
+  return X;
+}
+
+
 //[[Rcpp::export]]
 arma::vec triangl(const arma::mat& X){
   int n = X.n_cols;
@@ -164,10 +206,17 @@ arma::colvec rep_times(const arma::colvec& u, int times){
 
 //*************************************************************************
 //VECTORIZED EXPONENCIALIZATION
+
+struct pow_wrapper {
+  public: double operator()(double a, double b) {
+    return ::pow(a, b);
+  }
+};
+
 NumericVector vecpow(const NumericVector base, const NumericVector exp){
   Rcpp::NumericVector out(base.size());
   std::transform(base.begin(), base.end(),
-                 exp.begin(), out.begin(), ::pow);
+                 exp.begin(), out.begin(), pow_wrapper());
   return out;
 }
 
@@ -1587,7 +1636,9 @@ arma::mat RcppmomentsFT(int k, arma::vec mu, arma::mat S, double nu){
   int n = mu.size();
   out = ifunrec2(k,mu,S,nu);
   arma::vec M = out[1];
-  for(int i=0; i<=pow(2,n)-2; ++i){
+  double dos = 2;
+  double ene = n;
+  for(int i=0; i<=pow(dos,ene)-2; ++i){
     arma::rowvec ind1 = DecToSigns(i,n);
     M += ifunrec02(k,mu%ind1.t(),S%(ind1.t()*ind1),nu);
   }
