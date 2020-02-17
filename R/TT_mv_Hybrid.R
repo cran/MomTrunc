@@ -105,14 +105,15 @@ meanvarT16 = function(a,b,mu,Sigma,nu,omega = FALSE)
   }
 }
 
-
 # Upper -------------------------------------------------------------------
 
 meanvarT16_upper = function(b,mu,Sigma,nu,omega = FALSE)
 {
   if(nu==3){nu = 3.01}
+  
   p = length(mu)
   nnu = nu/(nu-2)
+  
   if(p==1){
     meanvarT16(-Inf,b,mu,Sigma,nu,omega)
   }
@@ -121,7 +122,7 @@ meanvarT16_upper = function(b,mu,Sigma,nu,omega = FALSE)
   #F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma)[1]
   
   logF0 = pmvt.genz(upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 1000)$Estimation
-  logF0nnu = pmvt.genz(upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,N = 1000)$Estimation
+  logF0nnu = pmvt.genz(upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,uselog2 = TRUE,N = 1000)$Estimation
   
   #Vectors ca and cb
   SSigma  = nnu*Sigma
@@ -163,6 +164,9 @@ meanvarT16_upper = function(b,mu,Sigma,nu,omega = FALSE)
       cb[j]    = log2prod(dent(b[j],mu[j],ssigma2[j],nu-2),logF00b)
       
       Wb[-j,j] = mu0b - log2ratio(nnu0*Sigma0b%*%(Dbb[-j,j]*nf$Pbb[-j,j]),logF00b)
+      
+      #Wb[-j,j] = mu0b + log2ratio(-nnu0*Sigma0b%*%(Dbb[-j,j]*nf$Pbb[-j,j]),logF00b)
+      
       Wb[j,j]  = b[j]
     }
     
@@ -171,7 +175,7 @@ meanvarT16_upper = function(b,mu,Sigma,nu,omega = FALSE)
   muY  = mu - log2ratio(SSigma%*%cb,logF0)
   ratio0 = 2^(logF0nnu - logF0)
   
-  Exx  = muY%*%t(mu) +  ratio0*SSigma -  log2ratio((Wb%*%diag(cb))%*%SSigma,logF0)
+  Exx  = muY%*%t(mu) +  ratio0*SSigma - log2ratio(Wb%*%diag(cb)%*%SSigma,logF0)
   
   #Exx = (Exx + t(Exx))/2
   varY = Exx - muY%*%t(muY)
