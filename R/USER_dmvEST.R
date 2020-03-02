@@ -47,9 +47,14 @@ dmvEST0 <- function(y, mu, Sigma, lambda,tau,nu){
   n <- nrow(y)
   p <- ncol(y)
   tautil<-tau/sqrt(1+sum(lambda^2))
+  
+  nu2y = (nu + p)/(nu + mahalanobis(y,center = mu,cov = Sigma))
+  
   dens <- dmvt(x = y,delta = c(mu),sigma = Sigma,df = nu,type = "shifted",log = FALSE)*exp(
-    pt(apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
-               (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau,df = nu+p,log.p = TRUE) - pt(tautil,nu,log.p = TRUE))
+    pt(sqrt(nu2y)*(
+         apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
+               (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum) + tau),
+       df = nu+p,log.p = TRUE) - pt(tautil,nu,log.p = TRUE))
   return(dens)
 }
 
@@ -71,8 +76,14 @@ dmvEST1 <- function(y, mu=0, Sigma=1, lambda,tau,nu){
     omega_tau = (nu+tautil^2)/(nu+1)
     return(dent(y,mu-mub,omega_tau*Gamma,nu+1))
   }
+  
+  nu2y = (nu + 1)/(nu + mahalanobis(y,center = mu,cov = Sigma))
+  
   dens <- dent(x = c(y),mu = c(mu),sigma2 = Sigma,nu = nu)*exp(
-    pt(apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
-               (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum)+tau,df = nu+1,log.p = TRUE) - pt(tautil,nu,log.p = TRUE))
+    pt(
+      sqrt(nu2y)*(
+      apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
+               (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum) + tau),
+      df = nu+1,log.p = TRUE) - pt(tautil,nu,log.p = TRUE))
   return(dens)
 }

@@ -70,10 +70,8 @@ Victor H. Lachos <\email{hlachos@uconn.edu}>
 Maintainer: Christian E. Galarza <\email{cgalarza88@gmail.com}>
 }
 \note{
-Degrees of freedom must be a positive integer. If \code{nu >= 300}, Normal case is considered."
+If \code{nu >= 300}, Normal case is considered."
 }
-
-\section{Warning }{For the Student-t case, including ST and EST, \code{kappa}-\eqn{th} order moments exist only for  \code{kappa < nu}.}
 
 \seealso{
 \code{\link{onlymeanTMD}},\code{\link{meanvarTMD}},\code{\link{momentsFMD}},\code{\link{meanvarFMD}},\code{\link{dmvSN}},\code{\link{pmvSN}},\code{\link{rmvSN}}, \code{\link{dmvESN}},\code{\link{pmvESN}},\code{\link{rmvESN}}, \code{\link{dmvST}},\code{\link{pmvST}},\code{\link{rmvST}}, \code{\link{dmvEST}},\code{\link{pmvEST}},\code{\link{rmvEST}}
