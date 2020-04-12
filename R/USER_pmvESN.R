@@ -8,7 +8,7 @@ pmvESN = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda))
     Delta = sqrtm(Sigma)%*%lambda/sqrt(1+sum(lambda^2))
     Gamma = Sigma - Delta%*%t(Delta)
     rownames(Gamma) <- colnames(Gamma)
-    return(prob_opt(lower = lower,upper = upper,mean = c(mu - tautil*Delta),sigma = Gamma,uselog2 = log2))
+    return(pmvnormt(lower = lower,upper = upper,mean = c(mu - tautil*Delta),sigma = Gamma,uselog2 = log2))
   }
   aaum = c(lower-mu,-Inf)
   baum = c(upper-mu,tautil)
@@ -22,8 +22,8 @@ pmvESN = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda))
   Omega<- rbind(Omega1,Omega2)
   rownames(Omega) <- colnames(Omega)
   if(log2 == TRUE){
-    return(prob_opt(lower = aaum,upper = baum,mean = rep(0,p+1),sigma = Omega,uselog2 = TRUE) - pnorm(tautil,log.p = TRUE)/log(2))
+    return(pmvnormt(lower = aaum,upper = baum,mean = rep(0,p+1),sigma = Omega,uselog2 = TRUE) - pnorm(tautil,log.p = TRUE)/log(2))
   }else{
-    return(prob_opt(lower = aaum,upper = baum,mean = rep(0,p+1),sigma = Omega)/pnorm(tautil))
+    return(pmvnormt(lower = aaum,upper = baum,mean = rep(0,p+1),sigma = Omega)/pnorm(tautil))
   }
 }

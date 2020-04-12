@@ -24,8 +24,8 @@ meanvarT16 = function(a,b,mu,Sigma,nu,omega = FALSE)
   
   if(nu==3){nu = 3.01}
   
-  logF0 = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 1000)$Estimation
-  logF0nnu = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,N = 1000,uselog2 = TRUE)$Estimation
+  logF0 = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 799)$Estimation
+  logF0nnu = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,N = 799,uselog2 = TRUE)$Estimation
   
   #Vectors ca and cb
   SSigma  = nnu*Sigma
@@ -69,7 +69,7 @@ meanvarT16 = function(a,b,mu,Sigma,nu,omega = FALSE)
         Dab[seqq_j[i],j] = dent(b0[i],mu0a[i],nnu0*diag(as.matrix(Sigma0a))[i],nu-3)
       }
       
-      logF00a  = prob_opt(a[-j],b[-j],mu0a,Sigma0a,nu-1,uselog2 = TRUE)
+      logF00a  = pmvnormt(a[-j],b[-j],mu0a,Sigma0a,nu-1,uselog2 = TRUE)
       ca[j]    = log2prod(dent(a[j],mu[j],ssigma2[j],nu-2),logF00a)
       
       Wa[-j,j] = mu0a + log2ratio(nnu0*Sigma0a%*%(Daa[-j,j]*nf$Paa[-j,j] - Dab[-j,j]*nf$Pab[-j,j]),logF00a)
@@ -84,7 +84,7 @@ meanvarT16 = function(a,b,mu,Sigma,nu,omega = FALSE)
         Dbb[seqq_j[i],j] = dent(b0[i],mu0b[i],nnu0*diag(as.matrix(Sigma0b))[i],nu-3)
       }
       
-      logF00b  = prob_opt(a[-j],b[-j],mu0b,Sigma0b,nu-1,uselog2 = TRUE)
+      logF00b  = pmvnormt(a[-j],b[-j],mu0b,Sigma0b,nu-1,uselog2 = TRUE)
       cb[j]    = log2prod(dent(b[j],mu[j],ssigma2[j],nu-2),logF00b)
       
       Wb[-j,j] = mu0b + log2ratio(nnu0*Sigma0b%*%(Dba[-j,j]*nf$Pba[-j,j] - Dbb[-j,j]*nf$Pbb[-j,j]),logF00b)
@@ -121,8 +121,8 @@ meanvarT16_upper = function(b,mu,Sigma,nu,omega = FALSE)
   #print(GB$maxpts)
   #F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma)[1]
   
-  logF0 = pmvt.genz(upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 1000)$Estimation
-  logF0nnu = pmvt.genz(upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,uselog2 = TRUE,N = 1000)$Estimation
+  logF0 = pmvt.genz(upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 799)$Estimation
+  logF0nnu = pmvt.genz(upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,uselog2 = TRUE,N = 799)$Estimation
   
   #Vectors ca and cb
   SSigma  = nnu*Sigma
@@ -160,7 +160,7 @@ meanvarT16_upper = function(b,mu,Sigma,nu,omega = FALSE)
         Dbb[seqq_j[i],j] = dent(b0[i],mu0b[i],nnu0*diag(as.matrix(Sigma0b))[i],nu-3)
       }
       
-      logF00b  = prob_opt(upper = b[-j],mean = mu0b,sigma = Sigma0b,nu = nu-1,uselog2 = TRUE)
+      logF00b  = pmvnormt(upper = b[-j],mean = mu0b,sigma = Sigma0b,nu = nu-1,uselog2 = TRUE)
       cb[j]    = log2prod(dent(b[j],mu[j],ssigma2[j],nu-2),logF00b)
       
       Wb[-j,j] = mu0b - log2ratio(nnu0*Sigma0b%*%(Dbb[-j,j]*nf$Pbb[-j,j]),logF00b)
@@ -223,8 +223,8 @@ meanvarT16_finite = function(a,b,mu,Sigma,nu,omega = FALSE)
   #print(GB$maxpts)
   #F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma)[1]
   
-  logF0 = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 1000)$Estimation
-  logF0nnu = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,uselog2 = TRUE,N = 1000)$Estimation
+  logF0 = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 799)$Estimation
+  logF0nnu = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,uselog2 = TRUE,N = 799)$Estimation
   
   #Vectors ca and cb
   SSigma  = nnu*Sigma
@@ -268,14 +268,14 @@ meanvarT16_finite = function(a,b,mu,Sigma,nu,omega = FALSE)
         Dbb[seqq_j[i],j] = dent(b0[i],mu0b[i],nnu0*diag(as.matrix(Sigma0b))[i],nu-3)
       }
       
-      logF00a  = prob_opt(a[-j],b[-j],mu0a,Sigma0a,nu-1,uselog2 = TRUE)
+      logF00a  = pmvnormt(a[-j],b[-j],mu0a,Sigma0a,nu-1,uselog2 = TRUE)
       ca[j]    = log2prod(dent(a[j],mu[j],ssigma2[j],nu-2),logF00a)
       
       Wa[-j,j] = mu0a + log2ratio(nnu0*Sigma0a%*%(Daa[-j,j]*nf$Paa[-j,j] - Dab[-j,j]*nf$Pab[-j,j]),logF00a)
       Wa[j,j]  = a[j]
     
 
-      logF00b  = prob_opt(a[-j],b[-j],mu0b,Sigma0b,nu-1,uselog2 = TRUE)
+      logF00b  = pmvnormt(a[-j],b[-j],mu0b,Sigma0b,nu-1,uselog2 = TRUE)
       cb[j]    = log2prod(dent(b[j],mu[j],ssigma2[j],nu-2),logF00b)
       
       Wb[-j,j] = mu0b + log2ratio(nnu0*Sigma0b%*%(Dba[-j,j]*nf$Pba[-j,j] - Dbb[-j,j]*nf$Pbb[-j,j]),logF00b)

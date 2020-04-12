@@ -50,7 +50,7 @@ genPxy = function(a,b,mu,Sigma,nu){
           
           cdf.aa = ifelse(p==3,pt((bb[-rs]-mu.aa)/sqrt(R21/daa),df=nu-2)-pt((aa[-rs]-mu.aa)/sqrt(R21/daa),df=nu-2)
                           
-                          ,prob_opt(lower = aa[-rs]-mu.aa, upper = bb[-rs]-mu.aa, sigma = R21/daa, nu=nu-2))
+                          ,pmvnormt(lower = aa[-rs]-mu.aa, upper = bb[-rs]-mu.aa, sigma = R21/daa, nu=nu-2))
         }
         
         if(all(is.finite(c(a[r],b[s]))))
@@ -63,7 +63,7 @@ genPxy = function(a,b,mu,Sigma,nu){
           
           cdf.ab = ifelse(p==3,pt((bb[-rs]-mu.ab)/sqrt(R21/dab),df=nu-2)-pt((aa[-rs]-mu.ab)/sqrt(R21/dab),df=nu-2)
                           
-                          ,prob_opt(lower = aa[-rs]-mu.ab, upper = bb[-rs]-mu.ab, sigma = R21/dab, nu=nu-2))
+                          ,pmvnormt(lower = aa[-rs]-mu.ab, upper = bb[-rs]-mu.ab, sigma = R21/dab, nu=nu-2))
         }
         
         if(all(is.finite(c(b[r],a[s]))))
@@ -77,7 +77,7 @@ genPxy = function(a,b,mu,Sigma,nu){
           
           cdf.ba = ifelse(p==3,pt((bb[-rs]-mu.ba)/sqrt(R21/dba),df=nu-2)-pt((aa[-rs]-mu.ba)/sqrt(R21/dba),df=nu-2)
                           
-                          ,prob_opt(lower = aa[-rs]-mu.ba, upper = bb[-rs]-mu.ba, sigma = R21/dba, nu=nu-2))
+                          ,pmvnormt(lower = aa[-rs]-mu.ba, upper = bb[-rs]-mu.ba, sigma = R21/dba, nu=nu-2))
         }
         
         if(all(is.finite(c(b[r],b[s]))))
@@ -91,7 +91,7 @@ genPxy = function(a,b,mu,Sigma,nu){
           
           cdf.bb = ifelse(p==3,pt((bb[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2)-pt((aa[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2)
                           
-                          ,prob_opt(lower = aa[-rs]-mu.bb, upper = bb[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
+                          ,pmvnormt(lower = aa[-rs]-mu.bb, upper = bb[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
           
         }
         
@@ -161,7 +161,7 @@ genPxy_upper = function(b,mu,Sigma,nu){
           
           cdf.bb = ifelse(p==3,pt((bb[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2),
                           
-                          prob_opt(upper = bb[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
+                          pmvnormt(upper = bb[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
           
         }
         
@@ -228,7 +228,7 @@ genPxy_finite = function(a,b,mu,Sigma,nu){
         
         cdf.aa = ifelse(p==3,pt((bb[-rs]-mu.aa)/sqrt(R21/daa),df=nu-2)-pt((aa[-rs]-mu.aa)/sqrt(R21/daa),df=nu-2)
                         
-                        ,prob_opt(lower = aa[-rs]-mu.aa, upper = bb[-rs]-mu.aa, sigma = R21/daa, nu=nu-2))
+                        ,pmvnormt(lower = aa[-rs]-mu.aa, upper = bb[-rs]-mu.aa, sigma = R21/daa, nu=nu-2))
         
         
         mu.ab = c(tmp%*%c(aa[r],bb[s]))
@@ -237,7 +237,7 @@ genPxy_finite = function(a,b,mu,Sigma,nu){
         
         cdf.ab = ifelse(p==3,pt((bb[-rs]-mu.ab)/sqrt(R21/dab),df=nu-2)-pt((aa[-rs]-mu.ab)/sqrt(R21/dab),df=nu-2)
                         
-                        ,prob_opt(lower = aa[-rs]-mu.ab, upper = bb[-rs]-mu.ab, sigma = R21/dab, nu=nu-2))
+                        ,pmvnormt(lower = aa[-rs]-mu.ab, upper = bb[-rs]-mu.ab, sigma = R21/dab, nu=nu-2))
         
         
         
@@ -247,7 +247,7 @@ genPxy_finite = function(a,b,mu,Sigma,nu){
         
         cdf.ba = ifelse(p==3,pt((bb[-rs]-mu.ba)/sqrt(R21/dba),df=nu-2)-pt((aa[-rs]-mu.ba)/sqrt(R21/dba),df=nu-2)
                         
-                        ,prob_opt(lower = aa[-rs]-mu.ba, upper = bb[-rs]-mu.ba, sigma = R21/dba, nu=nu-2))
+                        ,pmvnormt(lower = aa[-rs]-mu.ba, upper = bb[-rs]-mu.ba, sigma = R21/dba, nu=nu-2))
         
         
         
@@ -257,7 +257,7 @@ genPxy_finite = function(a,b,mu,Sigma,nu){
         
         cdf.bb = ifelse(p==3,pt((bb[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2)-pt((aa[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2)
                         
-                        ,prob_opt(lower = aa[-rs]-mu.bb, upper = bb[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
+                        ,pmvnormt(lower = aa[-rs]-mu.bb, upper = bb[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
         
       }
       

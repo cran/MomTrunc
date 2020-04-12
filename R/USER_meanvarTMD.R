@@ -26,7 +26,8 @@ meanvarTMD = function(lower = rep(-Inf,length(mu)),upper = rep(Inf,length(mu)),m
 
     lambda = as.matrix(lambda)
     Gamma = as.matrix(Gamma)
-
+    Sigma = as.matrix(Sigma)
+    
     if(nrow(Sigma) != p | ncol(Sigma) != p | nrow(lambda) != p | ncol(lambda) != q | nrow(Gamma) != q | ncol(Gamma) != q){
       stop("Nonconforming parameters dimensions. See manual.")
     }

@@ -1,7 +1,7 @@
 useDynLib(MomTrunc)
 import(Rcpp)
-importFrom("mvtnorm","dmvnorm","dmvt","rmvnorm","rmvt","pmvnorm","pmvt","TVPACK")
-importFrom("tlrmvnmvt","pmvn.genz","pmvt.genz")
+importFrom("tlrmvnmvt","pmvn","pmvt","GenzBretz")
+importFrom("mvtnorm","dmvnorm","dmvt","rmvnorm","rmvt","pmvnorm","TVPACK")
 importFrom("stats", "dnorm", "dt", "pnorm", "pt","rnorm","integrate","rgamma","mahalanobis", "var","qt","runif")
 importFrom("hypergeo","genhypergeo")
 export(
@@ -10,6 +10,7 @@ export(
         #  Rcppqfun,Rcppqfun_b,Rcppqfun_ab,
         #RcppMCT.lin,MCT.lin,
         #RcppTT.GS,
+        pmvnormt,
         MCmeanvarTMD,
         dmvSN,pmvSN,rmvSN,
        dmvST,pmvST,rmvST,

@@ -107,3 +107,4 @@ invmills = function(x,mu=0,sd=1){
     return(exp(dnorm(x,mu,sd,log = TRUE) - pnorm(q = x,mean = mu,sd = sd,log.p = TRUE)))
   }
 }
+

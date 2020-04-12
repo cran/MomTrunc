@@ -104,7 +104,7 @@ recintab0 = function(kappa,a,b,mu,Sigma)
         H[ind] = pdfb[i]*recintab0(kappai,ai,bi,mbi,SSi)
       }
     }
-    M[1] = prob_opt(lower=a, upper=b, mean=mu,sigma = Sigma)
+    M[1] = pmvnormt(lower=a, upper=b, mean=mu,sigma = Sigma)
     a[a == -Inf] = 0
     b[b == Inf] = 0
     cp1 = cp[p,]

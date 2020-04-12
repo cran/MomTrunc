@@ -6,7 +6,7 @@ cdfFN = function(x,mu,Sigma)
     return(pnorm2(-x,x,mu,sqrt(Sigma)))
   }else
   {
-    return(prob_opt(lower = -x-mu,upper = x-mu,sigma = Sigma))
+    return(pmvnormt(lower = -x-mu,upper = x-mu,sigma = Sigma))
   }
 }
 

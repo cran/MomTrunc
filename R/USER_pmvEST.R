@@ -1,11 +1,11 @@
 #######################################################################################
 #######################################################################################
-lower=c(-10,-10)
-upper = c(10,10)
-Sigma=matrix(c(1, -0.5, -0.5, 1), 2, 2)
-lambda = c(1/2,-1/2)
-tau = 1
-nu = 4
+# lower=c(-10,-10)
+# upper = c(10,10)
+# Sigma=matrix(c(1, -0.5, -0.5, 1), 2, 2)
+# lambda = c(1/2,-1/2)
+# tau = 1
+# nu = 4
 
 
 
@@ -17,7 +17,7 @@ pmvEST = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda))
     Gamma = Sigma - Delta%*%t(Delta)
     rownames(Gamma) <- colnames(Gamma)
     omega_tau = (nu+tautil^2)/(nu+1)
-    return(prob_opt(lower = lower,upper = upper,mean = c(mu - tautil*Delta),sigma = omega_tau*Gamma,nu = nu+1,uselog2 = log2))
+    return(pmvnormt(lower = lower,upper = upper,mean = c(mu - tautil*Delta),sigma = omega_tau*Gamma,nu = nu+1,uselog2 = log2))
   }
   aaum = c(lower-mu,-Inf)
   baum = c(upper-mu,tautil)
@@ -32,8 +32,8 @@ pmvEST = function(lower = rep(-Inf,length(lambda)),upper=rep(Inf,length(lambda))
   rownames(Omega) <- colnames(Omega)
 
   if(log2 == TRUE){
-    return(min(prob_opt(lower = aaum,upper = baum,sigma = Omega,nu = nu+1,uselog2 = TRUE) - pt(tautil,nu,log.p = TRUE)/log(2),0))
+    return(min(pmvnormt(lower = aaum,upper = baum,sigma = Omega,nu = nu+1,uselog2 = TRUE) - pt(tautil,nu,log.p = TRUE)/log(2),0))
   }else{
-    return(min(prob_opt(lower = aaum,upper = baum,sigma = Omega,nu = nu+1)/pt(tautil,nu),1))
+    return(min(pmvnormt(lower = aaum,upper = baum,sigma = Omega,nu = nu+1)/pt(tautil,nu),1))
   }
 }

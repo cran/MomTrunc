@@ -38,7 +38,7 @@ Vaida.LRIC.onlymean<-function(a=rep(-Inf,length(mu)),b=rep(Inf,length(mu)),mu,Si
     b1 <- (b-mu)/sqrt(diag(Sigma))
     R <-  diag(1/sqrt(diag(Sigma)))%*%Sigma%*%diag(1/sqrt(diag(Sigma)))
     
-    logp <- prob_opt(lower = as.vector(a1),upper=as.vector(b1),sigma=R,uselog2 = TRUE)
+    logp <- pmvnormt(lower = as.vector(a1),upper=as.vector(b1),sigma=R,uselog2 = TRUE)
     prob = 2^logp
     
     if(prob < 1e-100){

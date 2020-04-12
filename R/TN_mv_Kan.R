@@ -16,7 +16,7 @@ Kan.IC = function(a,b,mu,Sigma){
   Sigma = sym.matrix(Sigma)
   #####
 
-  logp = prob_opt(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)
+  logp = pmvnormt(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)
   
   prob = 2^logp
   # if(prob > 1e-50){
@@ -98,7 +98,7 @@ Kan.LRIC = function(a,b,mu,Sigma){
   Sigma = sym.matrix(Sigma)
   #####
 
-  logp = prob_opt(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)
+  logp = pmvnormt(lower = a,upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)
   prob = 2^logp
   # if(prob > 1e-50){
   #   #no problems, so we run the Rcpp model
@@ -188,7 +188,7 @@ Kan.RC = function(b,mu,Sigma){
   Sigma = sym.matrix(Sigma)
   #####
 
-  logp = prob_opt(upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)
+  logp = pmvnormt(upper = b,mean = mu,sigma = Sigma,uselog2 = TRUE)
   
   prob = 2^logp
   # if(prob > 1e-50){

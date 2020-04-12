@@ -8,7 +8,7 @@ dtmvtmuvar = function(a,b,mu,S,nu){
   as = a1/s
   bs = b1/s
   
-  log2p = pmvt.genz(lower = a1,upper = b1,nu = nu,sigma = as.matrix(S),uselog2 = TRUE,N = 1000)$Estimation
+  log2p = pmvt.genz(lower = a1,upper = b1,nu = nu,sigma = as.matrix(S),uselog2 = TRUE,N = 799)$Estimation
   p = 2^log2p
   
   
@@ -297,7 +297,7 @@ ltmvtmuvar = function(a,mu,S,nu){
     return(list(mean = muY,EYY = varY +muY^2,varcov = varY))
   }
   
-  log2p = pmvt.genz(lower = a1,nu = nu,sigma = S,uselog2 = TRUE,N = 1000)$Estimation
+  log2p = pmvt.genz(lower = a1,nu = nu,sigma = S,uselog2 = TRUE,N = 799)$Estimation
   #p = 2^log2p
   #p = pmvt(lower = a1,df = nu,sigma = S)[1]
   q = qfunT_a(a,mu,S,nu)
@@ -353,7 +353,7 @@ ftmvtmuvar = function(a,b,mu,S,nu){
   as = a1/s
   bs = b1/s
   
-  log2p = pmvt.genz(lower = a1,upper = b1,nu = nu,sigma = S,uselog2 = TRUE,N = 1000)$Estimation
+  log2p = pmvt.genz(lower = a1,upper = b1,nu = nu,sigma = S,uselog2 = TRUE,N = 799)$Estimation
   p = 2^log2p
   
   if(n == 1){

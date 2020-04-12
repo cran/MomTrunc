@@ -88,10 +88,12 @@ value2 = momentsTMD(c(2,0,1),a,b,mu,Sigma,dist = "t",nu = 7)
 value3 = momentsTMD(c(2,0,1),a,b,mu,Sigma,lambda = c(-2,0,1),dist = "SN")
 value4 = momentsTMD(c(2,0,1),a,b,mu,Sigma,lambda = c(-2,0,1),tau = 1,dist = "ESN")
 
+\dontrun{
 #T cases with kappa scalar (all moments up to 3)
 value5 = momentsTMD(3,a,b,mu,Sigma,nu = 7,dist = "t")
 value6 = momentsTMD(3,a,b,mu,Sigma,lambda = c(-2,0,1),nu = 7,dist = "ST")
 value7 = momentsTMD(3,a,b,mu,Sigma,lambda = c(-2,0,1),tau = 1,nu = 7,dist = "EST")
+}
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

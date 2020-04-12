@@ -21,7 +21,7 @@ withinfsT = function(lower = rep(-Inf,length(mu)),upper = rep(Inf,length(mu)),mu
   p2 = p - q
   
   #For nu>2
-  #omega12 = nu/(nu-2)*prob_opt(lower = lower,upper = upper,mean = mu,sigma = nu*Sigma/(nu-2),nu = nu - 2)/prob_opt(lower = lower,upper = upper,mean = mu,sigma = Sigma,nu = nu)
+  #omega12 = nu/(nu-2)*pmvnormt(lower = lower,upper = upper,mean = mu,sigma = nu*Sigma/(nu-2),nu = nu - 2)/pmvnormt(lower = lower,upper = upper,mean = mu,sigma = Sigma,nu = nu)
   
   op2$varcov[bool,bool]  = out.finite$omega*Sigma[bool,bool] - 
                            Sigma[bool,-bool]%*%

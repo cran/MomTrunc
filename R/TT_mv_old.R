@@ -20,8 +20,8 @@
 #   #print(GB$maxpts)
 #   #F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma)[1]
 # 
-#   logF0 = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 1000)$Estimation
-#   F0nnu = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,N = 1000)$Estimation
+#   logF0 = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 799)$Estimation
+#   F0nnu = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,N = 799)$Estimation
 # 
 #   #Vectors ca and cb
 #   SSigma  = nnu*Sigma
@@ -80,8 +80,8 @@
 #   #print(GB$maxpts)
 #   #F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma)[1]
 # 
-#   logF0 = pmvt.genz(lower = a-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 1000)$Estimation
-#   F0nnu = pmvt.genz(lower = a-mu,nu = nu - 2,sigma = nnu*Sigma,N = 1000)$Estimation
+#   logF0 = pmvt.genz(lower = a-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 799)$Estimation
+#   F0nnu = pmvt.genz(lower = a-mu,nu = nu - 2,sigma = nnu*Sigma,N = 799)$Estimation
 # 
 #   #Vectors ca and cb
 #   SSigma  = nnu*Sigma
@@ -139,8 +139,8 @@
 #   #print(GB$maxpts)
 #   #F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma)[1]
 # 
-#   logF0 = pmvt.genz(upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 1000)$Estimation
-#   F0nnu = pmvt.genz(upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,N = 1000)$Estimation
+#   logF0 = pmvt.genz(upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 799)$Estimation
+#   F0nnu = pmvt.genz(upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,N = 799)$Estimation
 # 
 #   #Vectors ca and cb
 #   SSigma  = nnu*Sigma
@@ -200,8 +200,8 @@
 #   #print(GB$maxpts)
 #   #F0 = pmvt(lower = a-mu,upper = b-mu,df = nu,sigma = Sigma)[1]
 # 
-#   logF0 = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 1000)$Estimation
-#   F0nnu = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,N = 1000)$Estimation
+#   logF0 = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu,sigma = Sigma,uselog2 = TRUE,N = 799)$Estimation
+#   F0nnu = pmvt.genz(lower = a-mu,upper = b-mu,nu = nu - 2,sigma = nnu*Sigma,N = 799)$Estimation
 # 
 #   #Vectors ca and cb
 #   SSigma  = nnu*Sigma

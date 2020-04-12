@@ -70,7 +70,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
   a = lower; b = upper
   p = length(a)
   
-  al0 = prob_opt(lower = a, upper = b, sigma = R, nu = nu)
+  al0 = pmvnormt(lower = a, upper = b, sigma = R, nu = nu)
   
   ### pdf & cdf
   
@@ -103,7 +103,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
       
       G1a[r] = ifelse(p==2,pt(upp/sqrt(S1/da[r]),df=nu-1)-pt(low/sqrt(S1/da[r]),df=nu-1)
                       
-                      ,prob_opt(lower = low, upper = upp, sigma = S1/da[r], nu = nu-1))
+                      ,pmvnormt(lower = low, upper = upp, sigma = S1/da[r], nu = nu-1))
     }
     
     if(flag.b[r]){
@@ -112,7 +112,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
       
       G1b[r] = ifelse(p==2,pt(upp/sqrt(S1/db[r]),df=nu-1)-pt(low/sqrt(S1/db[r]),df=nu-1)
                       
-                      ,prob_opt(lower = low, upper = upp, sigma = S1/db[r], nu = nu-1))
+                      ,pmvnormt(lower = low, upper = upp, sigma = S1/db[r], nu = nu-1))
     }
     
   }
@@ -175,7 +175,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
             
             cdf.aa = ifelse(p==3,pt((b[-rs]-mu.aa)/sqrt(R21/daa),df=nu-2)-pt((a[-rs]-mu.aa)/sqrt(R21/daa),df=nu-2)
                             
-                            ,prob_opt(lower = a[-rs]-mu.aa, upper = b[-rs]-mu.aa, sigma = R21/daa, nu=nu-2))
+                            ,pmvnormt(lower = a[-rs]-mu.aa, upper = b[-rs]-mu.aa, sigma = R21/daa, nu=nu-2))
           }
           
           if(pdf.ab != 0)
@@ -188,7 +188,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
             
             cdf.ab = ifelse(p==3,pt((b[-rs]-mu.ab)/sqrt(R21/dab),df=nu-2)-pt((a[-rs]-mu.ab)/sqrt(R21/dab),df=nu-2)
                             
-                            ,prob_opt(lower = a[-rs]-mu.ab, upper = b[-rs]-mu.ab, sigma = R21/dab, nu=nu-2))
+                            ,pmvnormt(lower = a[-rs]-mu.ab, upper = b[-rs]-mu.ab, sigma = R21/dab, nu=nu-2))
           }
           
           if(pdf.ba != 0)
@@ -202,7 +202,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
             
             cdf.ba = ifelse(p==3,pt((b[-rs]-mu.ba)/sqrt(R21/dba),df=nu-2)-pt((a[-rs]-mu.ba)/sqrt(R21/dba),df=nu-2)
                             
-                            ,prob_opt(lower = a[-rs]-mu.ba, upper = b[-rs]-mu.ba, sigma = R21/dba, nu=nu-2))
+                            ,pmvnormt(lower = a[-rs]-mu.ba, upper = b[-rs]-mu.ba, sigma = R21/dba, nu=nu-2))
           }
           
           if(pdf.bb != 0)
@@ -216,7 +216,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
             
             cdf.bb = ifelse(p==3,pt((b[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2)-pt((a[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2)
                             
-                            ,prob_opt(lower = a[-rs]-mu.bb, upper = b[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
+                            ,pmvnormt(lower = a[-rs]-mu.bb, upper = b[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
             
           }
           
@@ -232,7 +232,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
     
     D = matrix(0,p,p)
     
-    al1 = prob_opt(lower = a, upper = b, sigma = R/la1, nu=nu-2,uselog2 = TRUE)
+    al1 = pmvnormt(lower = a, upper = b, sigma = R/la1, nu=nu-2,uselog2 = TRUE)
     
     a[is.infinite(a)] = 0
     b[is.infinite(b)] = 0
@@ -271,7 +271,7 @@ TT.moment.IC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)), u
   a = lower; b = upper
   p = length(a)
   
-  al0 = prob_opt(lower = a, upper = b, sigma = R, nu = nu,uselog2 = TRUE)
+  al0 = pmvnormt(lower = a, upper = b, sigma = R, nu = nu,uselog2 = TRUE)
   
   ### pdf & cdf
   
@@ -300,13 +300,13 @@ TT.moment.IC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)), u
     
     G1a[r] = ifelse(p==2,pt(upp/sqrt(S1/da[r]),df=nu-1)-pt(low/sqrt(S1/da[r]),df=nu-1)
                     
-                    ,prob_opt(lower = low, upper = upp, sigma = S1/da[r], nu = nu-1))
+                    ,pmvnormt(lower = low, upper = upp, sigma = S1/da[r], nu = nu-1))
     
     mub = temp * b[r]; low = a[-r]-mub; upp = b[-r]-mub
     
     G1b[r] = ifelse(p==2,pt(upp/sqrt(S1/db[r]),df=nu-1)-pt(low/sqrt(S1/db[r]),df=nu-1)
                     
-                    ,prob_opt(lower = low, upper = upp, sigma = S1/db[r], nu = nu-1))
+                    ,pmvnormt(lower = low, upper = upp, sigma = S1/db[r], nu = nu-1))
     
   }
   
@@ -374,19 +374,19 @@ TT.moment.IC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)), u
           
           cdf.aa = ifelse(p==3,pt((b[-rs]-mu.aa)/sqrt(R21/daa),df=nu-2)-pt((a[-rs]-mu.aa)/sqrt(R21/daa),df=nu-2)
                           
-                          ,prob_opt(lower = a[-rs]-mu.aa, upper = b[-rs]-mu.aa, sigma = R21/daa, nu=nu-2))
+                          ,pmvnormt(lower = a[-rs]-mu.aa, upper = b[-rs]-mu.aa, sigma = R21/daa, nu=nu-2))
           
           cdf.ab = ifelse(p==3,pt((b[-rs]-mu.ab)/sqrt(R21/dab),df=nu-2)-pt((a[-rs]-mu.ab)/sqrt(R21/dab),df=nu-2)
                           
-                          ,prob_opt(lower = a[-rs]-mu.ab, upper = b[-rs]-mu.ab, sigma = R21/dab, nu=nu-2))
+                          ,pmvnormt(lower = a[-rs]-mu.ab, upper = b[-rs]-mu.ab, sigma = R21/dab, nu=nu-2))
           
           cdf.ba = ifelse(p==3,pt((b[-rs]-mu.ba)/sqrt(R21/dba),df=nu-2)-pt((a[-rs]-mu.ba)/sqrt(R21/dba),df=nu-2)
                           
-                          ,prob_opt(lower = a[-rs]-mu.ba, upper = b[-rs]-mu.ba, sigma = R21/dba, nu=nu-2))
+                          ,pmvnormt(lower = a[-rs]-mu.ba, upper = b[-rs]-mu.ba, sigma = R21/dba, nu=nu-2))
           
           cdf.bb = ifelse(p==3,pt((b[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2)-pt((a[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2)
                           
-                          ,prob_opt(lower = a[-rs]-mu.bb, upper = b[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
+                          ,pmvnormt(lower = a[-rs]-mu.bb, upper = b[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
           
         }
         
@@ -402,7 +402,7 @@ TT.moment.IC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)), u
     
     diag(D) = a * qa - b * qb - diag(R%*%H)
     
-    al1 = prob_opt(lower = a, upper = b, sigma = R/la1, nu=nu-2,uselog2 = TRUE)
+    al1 = pmvnormt(lower = a, upper = b, sigma = R/la1, nu=nu-2,uselog2 = TRUE)
     
     #EXX = (2^al1 * R + R %*% (H + D) %*% R) / 2^al0 / la1
     #EXX = log2ratio(2^al1 * R + R %*% (H + D) %*% R, al0) / la1
@@ -434,7 +434,7 @@ TT.moment.RC = function(R=diag(length(upper)), nu=5, upper=rep(Inf, nrow(R)))
   b = upper
   p = length(b)
   
-  al0 = prob_opt(upper = b, sigma = R, nu = nu)
+  al0 = pmvnormt(upper = b, sigma = R, nu = nu)
   
   ### pdf & cdf
   
@@ -462,7 +462,7 @@ TT.moment.RC = function(R=diag(length(upper)), nu=5, upper=rep(Inf, nrow(R)))
       mub = temp * b[r]; upp = b[-r]-mub
       
       G1b[r] = ifelse(p==2,pt(upp/sqrt(S1/db[r]),df=nu-1),
-                      prob_opt(upper = upp, sigma = S1/db[r], nu = nu-1))
+                      pmvnormt(upper = upp, sigma = S1/db[r], nu = nu-1))
     }
     
   }
@@ -519,7 +519,7 @@ TT.moment.RC = function(R=diag(length(upper)), nu=5, upper=rep(Inf, nrow(R)))
             dbb = (nu-2)/(nu+(b[r]^2-2*R[r,s]*b[r]*b[s]+b[s]^2)/(1-R[r,s]^2))
             
             cdf.bb = ifelse(p==3,pt((b[-rs]-mu.bb)/sqrt(R21/dbb),df=nu-2),
-                            prob_opt(upper = b[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
+                            pmvnormt(upper = b[-rs]-mu.bb, sigma = R21/dbb, nu=nu-2))
             
           }
           
@@ -535,7 +535,7 @@ TT.moment.RC = function(R=diag(length(upper)), nu=5, upper=rep(Inf, nrow(R)))
     
     D = matrix(0,p,p)
     
-    al1 = prob_opt(upper = b, sigma = R/la1, nu=nu-2,uselog2 = TRUE)
+    al1 = pmvnormt(upper = b, sigma = R/la1, nu=nu-2,uselog2 = TRUE)
     
     b[is.infinite(b)] = 0
     
