@@ -234,7 +234,7 @@ Vaida.RC = function(b=c(1,2),mu=c(0,0), Sigma = diag(2)){
     for (j in 1:p){
       V = R[-j, -j, drop=F]-R[-j,j, drop=F]%*%R[j,-j, drop=F]
       nu = -qq[-j]+R[-j,j, drop=F]%*%qq[j]
-      dd[j] = log2prod0(dnorm(-qq[j]),tlrmvnmvt::pmvn(upper=as.vector(nu),sigma=V,uselog2 = TRUE)$Estimation)
+      dd[j] = log2prod0(dnorm(-qq[j]),tlrmvnmvt::pmvn(upper=as.vector(nu),sigma=V,uselog2 = TRUE))
     }
     EX = R%*%log2ratio(dd,alpha)
     Eycens = -diag(sqrt(diag(Sigma)))%*%EX+mu
@@ -255,7 +255,7 @@ Vaida.RC = function(b=c(1,2),mu=c(0,0), Sigma = diag(2)){
           invR = solve(R[c(s,t), c(s,t), drop=F])
           nu = -qq[-c(s,t)]+R[-c(s,t), c(s,t), drop=F]%*%invR%*%qq[c(s,t),,drop=F]
           V =  R[-c(s,t), -c(s,t), drop=F]- R[-c(s,t), c(s,t), drop=F]%*%invR%*%R[c(s,t), -c(s,t), drop=F]
-          H[s,t] = H[t,s] = log2prod0(dmvnorm(-qq[c(s, t)],sigma=matrix(c(1, R[s,t], R[t,s], 1), nrow=2)),tlrmvnmvt::pmvn(upper=as.vector(nu), sigma=V,uselog2 = TRUE)$Estimation)
+          H[s,t] = H[t,s] = log2prod0(dmvnorm(-qq[c(s, t)],sigma=matrix(c(1, R[s,t], R[t,s], 1), nrow=2)),tlrmvnmvt::pmvn(upper=as.vector(nu), sigma=V,uselog2 = TRUE))
           RH[s,t] = RH[t,s] = R[s,t]*H[s,t]
         }
       }
