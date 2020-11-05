@@ -38,7 +38,11 @@ Kan.IC = function(a,b,mu,Sigma){
   q = qa-qb
   muY = mu+ Sigma%*%log2ratio(q,logp)
 
-  if(max(abs(muY))> 10*max(abs(c(a,b)[is.finite(c(a,b))]))| any(muY < a | muY > b)){
+  if(
+    #max(abs(muY)) > 10*max(abs(c(a,b)[is.finite(c(a,b))]))
+    any(b < mu - 10*sqrt(diag(Sigma))) |
+    any(a > mu + 10*sqrt(diag(Sigma))) |
+    any(muY < a | muY > b)){
     #print("IC.Kan mean corrector applied 2 \n")
     #print("corrector")
     return(corrector(a,b,mu,Sigma,bw=36))
@@ -118,7 +122,8 @@ Kan.LRIC = function(a,b,mu,Sigma){
   q = qa-qb
   muY = mu+ Sigma%*%log2ratio(q,logp)
 
-  if(max(abs(muY))> 10*max(abs(c(a,b)[is.finite(c(a,b))])) | any(muY < a | muY > b)){
+  if(any(b < mu - 10*sqrt(diag(Sigma))) |
+     any(a > mu + 10*sqrt(diag(Sigma))) | any(muY < a | muY > b)){
     #print("corrector")
     return(corrector(a,b,mu,Sigma,bw=36))
   }
@@ -206,7 +211,9 @@ Kan.RC = function(b,mu,Sigma){
   qb = Rcppqfun_b(b1,Sigma)
   muY = mu - Sigma%*%log2ratio(qb,logp)
 
-  if(max(abs(muY))> 10*max(abs(b[is.finite(b)])) | any(muY > b)){
+#max(abs(muY))> 10*max(abs(b[is.finite(b)]))
+  
+  if(any(b < mu - 10*sqrt(diag(Sigma))) | any(muY > b)){
     #print("corrector")
     return(corrector(upper = b,mu = mu,Sigma = Sigma,bw=36))
   }

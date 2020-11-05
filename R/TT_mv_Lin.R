@@ -41,6 +41,14 @@ meanvarT.Lin.RC = function(b,mu,S,nu, omega = FALSE){
   bs = (b-mu)/ss
   R = S/(ss%*%t(ss))
   M=TT.moment.RC(R = R,nu,upper=bs)
+  
+  M = TTmoment::TT.moment(R,nu,lower = c(-Inf,-Inf),upper = bs)
+  M$mean = M$EX
+  M$EYY = M$EXX
+  
+  M = TT.moment.LRIC(R = R,nu = nu,lower = c(-Inf,-Inf),upper = bs)
+  
+  
   M$varcov = M$EYY -  M$mean%*%t(M$mean)
   M$mean = ss*M$mean + mu
   M$varcov = diag(ss)%*%M$varcov%*%diag(ss)
@@ -70,7 +78,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
   a = lower; b = upper
   p = length(a)
   
-  al0 = pmvnormt(lower = a, upper = b, sigma = R, nu = nu)
+  al0 = pmvnormt(lower = a, upper = b, sigma = R, nu = nu,uselog2 = TRUE)
   
   ### pdf & cdf
   
@@ -119,7 +127,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
   
   qa = f1a*G1a; qb = f1b*G1b
   
-  EX = R %*% (qa-qb) / al0 / la1
+  EX = R %*% log2ratio(qa-qb,al0) / la1
   
   if(nu>4){
     
@@ -434,7 +442,7 @@ TT.moment.RC = function(R=diag(length(upper)), nu=5, upper=rep(Inf, nrow(R)))
   b = upper
   p = length(b)
   
-  al0 = pmvnormt(upper = b, sigma = R, nu = nu)
+  al0 = pmvnormt(upper = b, sigma = R, nu = nu,uselog2 = TRUE)
   
   ### pdf & cdf
   
@@ -469,7 +477,7 @@ TT.moment.RC = function(R=diag(length(upper)), nu=5, upper=rep(Inf, nrow(R)))
   
   qb = f1b*G1b
   
-  EX = - R%*%qb / al0 / la1
+  EX = - log2ratio(R%*%qb,al0) / la1
   
   if(nu>4){
     
@@ -495,7 +503,8 @@ TT.moment.RC = function(R=diag(length(upper)), nu=5, upper=rep(Inf, nrow(R)))
         # pdf.bb = bivT(c(b[r],b[s]),S=R[rs,rs]/la2,nu=nu-4)
         
         
-        pdf.bb = dt2d(c(b[r],b[s])*sqrt(la2),rho = R[r,s],nu = nu-4)*la2
+        pdf.bb = dt2d(c(b[r],b[s])*
+                        sqrt(la2),rho = R[r,s],nu = nu-4)*la2
         
         
         if(p==2){cdf.bb = 1}
@@ -545,6 +554,8 @@ TT.moment.RC = function(R=diag(length(upper)), nu=5, upper=rep(Inf, nrow(R)))
     ratio0 = 2^(al1-al0)
     EXX = (ratio0 * R + log2ratio(R %*% (H + D) %*% R, al0)) / la1
     omega0 = nu/(nu-2)*ratio0
+    
+    EXX - EX%*%t(EX)
     
   } else {
     EXX=matrix(NA,p,p)
