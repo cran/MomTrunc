@@ -1,4 +1,4 @@
-349a192f3f29ed3df7492cb44c1585e5 *DESCRIPTION
+30967ba0db9b6d608b36298f669b2c8e *DESCRIPTION
 2e8a949bcfb6d9c0673888a879da706d *NAMESPACE
 44a44b9fef647944c6d8d4f5fd040537 *R/AUX_MC.R
 7573ffe9876fe145f7a3ea820abfa7ce *R/AUX_T.R
@@ -55,7 +55,7 @@ abb27b5869380b1721472cdd72ce0905 *R/TT_mom_Rcpp.R
 54cce039a2293ce91fb9c6c06f6bb4a4 *R/TT_mv.R
 509d904d20975500d7f456f332967167 *R/TT_mv_Hybrid.R
 0cb01fe006ec1b4ec64f3d7c5cb1c24e *R/TT_mv_Kan.R
-7a467e80eac1e730b47c38dcbc7bd387 *R/TT_mv_Lin.R
+5fce736adb3b3836c7fff19470a9cb2d *R/TT_mv_Lin.R
 e61704bebf332f65c7f2fd17ab492701 *R/TT_mv_old.R
 5cfa6cc9351a745d79b90b1c40b54727 *R/TT_onlymean_all.R
 7ae03e4eca604c9fc3f39b35e98e9458 *R/USER_MCmeanvarTMD.R
@@ -78,7 +78,7 @@ bfba43fd255970dea392e50d6af6e440 *R/USER_pmvST.R
 76de124856b675ba3bf151023a6ef0b7 *R/USER_rmvEST.R
 33eb98bcd8a16bfd4b6e6928fbe290d3 *R/USER_rmvSN.R
 e40b24a36040dec21910a7c7967e88ca *R/USER_rmvST.R
-452ccb517f4e2d3d54eb88b9f13ac032 *build/partial.rdb
+d6c29f236a089b211c37b45c29ad7178 *build/partial.rdb
 954e65472a623ccc387cce28fec28eb2 *man/MCmeanvarTMD.Rd
 15598bbe48f8334c98977260bc25ad32 *man/MomTrunc-package.Rd
 a04c2aa1e4daabc122fd8c7fe60a011b *man/cdfFMD.Rd
@@ -95,4 +95,4 @@ c605622e75ff40c4b8a8f7ff149b8501 *man/meanvarTMD.Rd
 7cc14aaf4e9b43167d156ac973e01c68 *src/Makevars
 7cc14aaf4e9b43167d156ac973e01c68 *src/Makevars.win
 487fa5f138428209f0d24c8c88bdef5a *src/RcppExports.cpp
-422150152385e1726cba9c6e17294990 *src/my_functions.cpp
+8af8907bf96f90a460dab89d67d52314 *src/my_functions.cpp

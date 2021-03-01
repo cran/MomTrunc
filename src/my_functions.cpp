@@ -532,8 +532,8 @@ arma::vec recintab0(arma::vec kappa,arma::vec a,arma::vec b, arma::vec mu, arma:
         H(ind-1) = pdfb(i-1)*recintab0(kappai,ai,bi,mbi,SSi);
       }
     }
-    arma::vec a1 = a - mu;
-    arma::vec b1 = b - mu;
+    arma::vec a1 = (a - mu)/s;
+    arma::vec b1 = (b - mu)/s;
     M(0) = pmvt_cpp(a1,b1,R);
     //M(0) = 1;
     a.elem(find_nonfinite(a)).zeros();

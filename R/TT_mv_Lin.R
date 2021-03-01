@@ -42,13 +42,6 @@ meanvarT.Lin.RC = function(b,mu,S,nu, omega = FALSE){
   R = S/(ss%*%t(ss))
   M=TT.moment.RC(R = R,nu,upper=bs)
   
-  M = TTmoment::TT.moment(R,nu,lower = c(-Inf,-Inf),upper = bs)
-  M$mean = M$EX
-  M$EYY = M$EXX
-  
-  M = TT.moment.LRIC(R = R,nu = nu,lower = c(-Inf,-Inf),upper = bs)
-  
-  
   M$varcov = M$EYY -  M$mean%*%t(M$mean)
   M$mean = ss*M$mean + mu
   M$varcov = diag(ss)%*%M$varcov%*%diag(ss)
