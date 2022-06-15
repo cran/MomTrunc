@@ -99,7 +99,7 @@ MC21 = MCmeanvarTMD(a,b,mu,Sigma,lambda = c(-2,0,1),nu = 4,dist = "ST")
 MC5 = MCmeanvarTMD(a,b,mu,Sigma,lambda = c(-2,0,1),tau = 1,dist = "ESN")
 MC6 = MCmeanvarTMD(a,b,mu,Sigma,lambda = c(-2,0,1),tau = 1,nu = 4,dist = "EST")
 
-\dontrun{
+\donttest{
 #Skew-unified Normal (SUN) and Skew-unified t (SUT) distributions
 
 Lambda = matrix(c(1,0,2,-3,0,-1),3,2) #A skewness matrix p times q

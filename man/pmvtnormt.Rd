@@ -24,7 +24,7 @@ The estimated probability or its log2 if \code{uselog2 == TRUE}
 
 
 \references{
-  Genz, A. (1992), "Numerical computation of multivariate
+Genz, A. (1992), "Numerical computation of multivariate
 normal probabilities," Journal of Computational and
 Graphical Statistics, 1, 141-149.
 

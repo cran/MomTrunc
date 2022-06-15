@@ -40,14 +40,21 @@ the vector of upper limits of length \eqn{p}.
   }
 }
 
-\references{
-Cao, J., Genton, M. G., Keyes, D. E., & Turkiyyah, G. M. (2019) "Exploiting Low
-	Rank Covariance Structures for Computing High-Dimensional Normal and Student-
-	t Probabilities" <\url{https://marcgenton.github.io/2019.CGKT.manuscript.pdf}>.
-	
-Galarza C.E., Matos L.A., Dey D.K. & Lachos V.H. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut <\url{https://stat.uconn.edu/tech-reports-2019/}>.
+\value{
+\code{dmvESN} gives the density, \code{pmvESN} gives the distribution function, and \code{rmvESN} generates random deviates for the Multivariate Extended-Skew Normal Distribution.
+}
 
-Genz, A., "Numerical computation of multivariate normal probabilities," Journal of Computational and Graphical Statistics, 1, 141-149 (1992) <doi:10.1080/10618600.1992.10477010>.
+
+\references{
+Galarza, C. E., Lin, T. I., Wang, W. L., & Lachos, V. H. (2021). On moments of folded and truncated multivariate Student-t distributions based on recurrence relations. Metrika, 84(6), 825-850 <doi:10.1007/s00184-020-00802-1>.
+
+Galarza, C. E., Matos, L. A., Dey, D. K., & Lachos, V. H. (2022a). "On moments of folded and doubly truncated multivariate extended skew-normal distributions." Journal of Computational and Graphical Statistics, 1-11 <doi:10.1080/10618600.2021.2000869>.
+
+Galarza, C. E., Matos, L. A., Castro, L. M., & Lachos, V. H. (2022b). Moments of the doubly truncated selection elliptical distributions with emphasis on the unified multivariate skew-t distribution. Journal of Multivariate Analysis, 189, 104944 <doi:10.1016/j.jmva.2021.104944>.
+
+Galarza, C.E., Matos, L.A. and Lachos, V.H. (2022c). An EM algorithm for estimating the parameters of the multivariate skew-normal distribution with censored responses. Metron. <doi:10.1007/s40300-021-00227-4>.
+
+Genz, A.,  (1992) "Numerical computation of multivariate normal probabilities," Journal of Computational and Graphical Statistics, 1, 141-149 <doi:10.1080/10618600.1992.10477010>.
 }
 
 \author{Christian E. Galarza <\email{cgalarza88@gmail.com}> and

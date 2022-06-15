@@ -253,8 +253,7 @@ TT.moment.LRIC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)),
   } else {
     EXX=matrix(NA,p,p)
     omega0 = NA
-    cat('Warning message:','\n')
-    cat('It only works for degrees of freedom larger than 4!')
+    warning('It only works for degrees of freedom larger than 4!')
   }
   
   return(list(mean=EX,EYY=EXX,omega = omega0))
@@ -416,8 +415,7 @@ TT.moment.IC = function(R=diag(length(lower)), nu=5, lower=rep(-Inf, nrow(R)), u
   } else {
     EXX=matrix(NA,p,p)
     omega0 = NA
-    cat('Warning message:','\n')
-    cat('It only works for degrees of freedom larger than 4!')
+    warning('It only works for degrees of freedom larger than 4!')
   }
   
   return(list(mean=EX,EYY=EXX,omega = omega0))
@@ -553,8 +551,7 @@ TT.moment.RC = function(R=diag(length(upper)), nu=5, upper=rep(Inf, nrow(R)))
   } else {
     EXX=matrix(NA,p,p)
     omega0 = NA
-    cat('Warning message:','\n')
-    cat('It only works for degrees of freedom larger than 4!')
+    warning('It only works for degrees of freedom larger than 4!')
   }
   
   return(list(mean=EX,EYY=EXX,omega = omega0))

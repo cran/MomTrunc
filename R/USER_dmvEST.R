@@ -77,13 +77,18 @@ dmvEST1 <- function(y, mu=0, Sigma=1, lambda,tau,nu){
     return(dent(y,mu-mub,omega_tau*Gamma,nu+1))
   }
   
-  nu2y = (nu + 1)/(nu + mahalanobis(y,center = mu,cov = Sigma))
+  nu2y = (nu + 1)/(nu + ((y - mu)/s)^2)
   
   dens <- dent(x = c(y),mu = c(mu),sigma2 = Sigma,nu = nu)*exp(
-    pt(
-      sqrt(nu2y)*(
-      apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
-               (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum) + tau),
-      df = nu+1,log.p = TRUE) - pt(tautil,nu,log.p = TRUE))
+    pt(q = sqrt(nu2y)*lambda*(y-mu)/s + tau,df = nu+1,log.p = TRUE) - 
+      pt(tautil,nu,log.p = TRUE))
+    
+    # pt(
+    #   sqrt(nu2y)*(
+    #   apply(matrix(rep(t(lambda)%*%solve(sqrtm(Sigma)),n), n, p, byrow = TRUE)*
+    #            (y - matrix(rep(mu, n), n, p, byrow = TRUE)), 1,sum) + tau),
+    #   df = nu+1,log.p = TRUE)
+    # 
+
   return(dens)
 }

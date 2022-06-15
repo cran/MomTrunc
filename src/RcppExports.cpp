@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // TT_GS_sp
 arma::mat TT_GS_sp(arma::uword n, arma::mat R, double nu, arma::vec x, arma::vec lower, arma::vec upper);
 RcppExport SEXP _MomTrunc_TT_GS_sp(SEXP nSEXP, SEXP RSEXP, SEXP nuSEXP, SEXP xSEXP, SEXP lowerSEXP, SEXP upperSEXP) {

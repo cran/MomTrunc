@@ -51,23 +51,15 @@ It returns a list with three elements:
 \item{EYY}{the second moment matrix of dimensions \eqn{p}x\eqn{p}}
 \item{varcov}{the variance-covariance matrix of dimensions \eqn{p}x\eqn{p}}
 }
+
 \references{
-Arellano-Valle, R. B. & Genton, M. G. (2005). On fundamental skew distributions. Journal of Multivariate
-Analysis, 96, 93-116.
+Galarza, C. E., Lin, T. I., Wang, W. L., & Lachos, V. H. (2021). On moments of folded and truncated multivariate Student-t distributions based on recurrence relations. Metrika, 84(6), 825-850 <doi:10.1007/s00184-020-00802-1>.
 
-Arellano-Valle, R. B. & Genton, M. G. (2010). Multivariate extended skew-t distributions and related
-families. Metron, 68(3), 201-234.
+Galarza, C. E., Matos, L. A., Dey, D. K., & Lachos, V. H. (2022a). "On moments of folded and doubly truncated multivariate extended skew-normal distributions." Journal of Computational and Graphical Statistics, 1-11 <doi:10.1080/10618600.2021.2000869>.
 
-Galarza C.E., Matos L.A., Dey D.K. & Lachos V.H. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut <\url{https://stat.uconn.edu/tech-reports-2019/}>.
-
-Ho, H. J., Lin, T. I., Chen, H. Y., & Wang, W. L. (2012). Some results on the truncated multivariate t distribution. Journal of Statistical Planning and Inference, 142(1), 25-40.
-
-Kan, R., & Robotti, C. (2017). On moments of folded and truncated multivariate normal distributions. Journal of Computational and Graphical Statistics, 26(4), 930-934.
-
-Kirkby J. Lars, Nguyen D. and Nguyen D. (2019). Moments of Student's t-distribution: A Unified Approach. <\url{https://arxiv.org/abs/1912.01607}>
-
-Vaida, F. & Liu, L. (2009). Fast implementation for normal mixed effects models with censored response. Journal of Computational and Graphical Statistics, 18(4), 797-817.
+Galarza, C. E., Matos, L. A., Castro, L. M., & Lachos, V. H. (2022b). Moments of the doubly truncated selection elliptical distributions with emphasis on the unified multivariate skew-t distribution. Journal of Multivariate Analysis, 189, 104944 <doi:10.1016/j.jmva.2021.104944>.
 }
+
 \author{Christian E. Galarza <\email{cgalarza88@gmail.com}> and
 Victor H. Lachos <\email{hlachos@uconn.edu}>
 
@@ -105,7 +97,7 @@ value4 = meanvarTMD(a,b,mu,Sigma,lambda = c(-2,0,1),nu = 4,dist = "ST")
 value5 = meanvarTMD(a,b,mu,Sigma,lambda = c(-2,0,1),tau = 1,dist = "ESN")
 value6 = meanvarTMD(a,b,mu,Sigma,lambda = c(-2,0,1),tau = 1,nu = 4,dist = "EST")
 
-\dontrun{
+\donttest{
 #Skew-unified Normal (SUN) and Skew-unified t (SUT) distributions
 
 Lambda = matrix(c(1,0,2,-3,0,-1),3,2) #A skewness matrix p times q

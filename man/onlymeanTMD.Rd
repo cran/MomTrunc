@@ -43,26 +43,22 @@ represents the truncated distribution to be used. The values are \code{normal}, 
 }
 }
 \details{
-Univariate case is also considered, where \code{Sigma} will be the variance \eqn{\sigma^2}. Normal case code is an R adaptation of the Matlab available function \code{dtmvnmom.m} from Kan & Robotti (2017) and it is used for \code{p<=3}. For higher dimensions we use an extension of the algorithm in Vaida (2009).
+Univariate case is also considered, where \code{Sigma} will be the variance \eqn{\sigma^2}. Normal case code is an R adaptation of the Matlab available function \code{dtmvnmom.m} from Kan & Robotti (2017) and it is used for \code{p<=3}. For higher dimensions we use proposal in Galarza (2022b).
 }
 \value{
 It returns the mean vector of length \eqn{p}.
 }
 \references{
-Arellano-Valle, R. B. & Genton, M. G. (2005). On fundamental skew distributions. Journal of Multivariate
-Analysis, 96, 93-116.
+Galarza, C. E., Lin, T. I., Wang, W. L., & Lachos, V. H. (2021). On moments of folded and truncated multivariate Student-t distributions based on recurrence relations. Metrika, 84(6), 825-850.
 
-Arellano-Valle, R. B. & Genton, M. G. (2010). Multivariate extended skew-t distributions and related
-families. Metron, 68(3), 201-234.
+Galarza-Morales, C. E., Matos, L. A., Dey, D. K., & Lachos, V. H. (2022a). "On moments of folded and doubly truncated multivariate extended skew-normal distributions." Journal of Computational and Graphical Statistics, 1-11 <doi:10.1080/10618600.2021.2000869>.
 
-Galarza C.E., Matos L.A., Dey D.K. & Lachos V.H. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut.
+Galarza, C. E., Matos, L. A., Castro, L. M., & Lachos, V. H. (2022b). Moments of the doubly truncated selection elliptical distributions with emphasis on the unified multivariate skew-t distribution. Journal of Multivariate Analysis, 189, 104944 <doi:10.1016/j.jmva.2021.104944>.
 
 Kan, R., & Robotti, C. (2017). On moments of folded and truncated multivariate normal distributions. Journal of Computational and Graphical Statistics, 26(4), 930-934.
-
-Kirkby J. Lars, Nguyen D. and Nguyen D. (2019). Moments of Student's t-distribution: A Unified Approach. <\url{https://arxiv.org/abs/1912.01607}>
-
-Vaida, F. & Liu, L. (2009). Fast implementation for normal mixed effects models with censored response. Journal of Computational and Graphical Statistics, 18(4), 797-817.
 }
+
+
 \author{Christian E. Galarza <\email{cgalarza88@gmail.com}> and
 Victor H. Lachos <\email{hlachos@uconn.edu}>
 

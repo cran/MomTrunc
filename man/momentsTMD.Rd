@@ -50,20 +50,15 @@ A data frame containing \eqn{p+1} columns. The \eqn{p} first containing the set 
 }
 
 \references{
-Arellano-Valle, R. B. & Genton, M. G. (2005). On fundamental skew distributions. Journal of Multivariate
-Analysis, 96, 93-116.
+Galarza, C. E., Lin, T. I., Wang, W. L., & Lachos, V. H. (2021). On moments of folded and truncated multivariate Student-t distributions based on recurrence relations. Metrika, 84(6), 825-850.
 
-Arellano-Valle, R. B. & Genton, M. G. (2010). Multivariate extended skew-t distributions and related
-families. Metron, 68(3), 201-234.
+Galarza-Morales, C. E., Matos, L. A., Dey, D. K., & Lachos, V. H. (2022a). "On moments of folded and doubly truncated multivariate extended skew-normal distributions." Journal of Computational and Graphical Statistics, 1-11 <doi:10.1080/10618600.2021.2000869>.
 
-Galarza C.E., Matos L.A., Dey D.K. & Lachos V.H. (2019) On Moments of Folded and Truncated Multivariate Extended Skew-Normal Distributions. Technical report. ID 19-14. University of Connecticut <\url{https://stat.uconn.edu/tech-reports-2019/}>.
+Galarza, C. E., Matos, L. A., Castro, L. M., & Lachos, V. H. (2022b). Moments of the doubly truncated selection elliptical distributions with emphasis on the unified multivariate skew-t distribution. Journal of Multivariate Analysis, 189, 104944 <doi:10.1016/j.jmva.2021.104944>.
 
 Kan, R., & Robotti, C. (2017). On moments of folded and truncated multivariate normal distributions. Journal of Computational and Graphical Statistics, 26(4), 930-934.
-
-Kirkby J. Lars, Nguyen D. and Nguyen D. (2019). Moments of Student's t-distribution: A Unified Approach. <\url{https://arxiv.org/abs/1912.01607}>
-
-Vaida, F. & Liu, L. (2009). Fast implementation for normal mixed effects models with censored response. Journal of Computational and Graphical Statistics, 18(4), 797-817.
 }
+
 \author{Christian E. Galarza <\email{cgalarza88@gmail.com}> and
 Victor H. Lachos <\email{hlachos@uconn.edu}>
 
@@ -88,7 +83,7 @@ value2 = momentsTMD(c(2,0,1),a,b,mu,Sigma,dist = "t",nu = 7)
 value3 = momentsTMD(c(2,0,1),a,b,mu,Sigma,lambda = c(-2,0,1),dist = "SN")
 value4 = momentsTMD(c(2,0,1),a,b,mu,Sigma,lambda = c(-2,0,1),tau = 1,dist = "ESN")
 
-\dontrun{
+\donttest{
 #T cases with kappa scalar (all moments up to 3)
 value5 = momentsTMD(3,a,b,mu,Sigma,nu = 7,dist = "t")
 value6 = momentsTMD(3,a,b,mu,Sigma,lambda = c(-2,0,1),nu = 7,dist = "ST")
