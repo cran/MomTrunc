@@ -9,7 +9,7 @@ dmvEST = function(x,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda,t
       stop("Lambda must be numeric and have same dimension than mu.")
     }
     if(all(lambda==0)){
-      warning("Lambda = 0, t case is considered.",immediate. = TRUE)
+      #warning("Lambda = 0, t case is considered.",immediate. = TRUE)
       return(dmvt(x = x,delta = c(mu),sigma = as.matrix(Sigma),df = nu,type = "shifted",log = FALSE))
     }
   }

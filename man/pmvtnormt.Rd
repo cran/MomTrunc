@@ -12,8 +12,8 @@ mean = rep(0,ncol(sigma)),sigma,nu = NULL,uselog2 = FALSE)
 \arguments{
   \item{lower}{lower integration limits, a numeric vector of length p}
   \item{upper}{upper integration limits, a numeric vector of length p}
-  \item{mean}{the mean parameter, a numeric vector of length p}
-  \item{sigma}{the covariance matrix, a square matrix that matches the length of `lower`}
+  \item{mean}{the location parameter, a numeric vector of length p}
+  \item{sigma}{the scale matrix, a square matrix that matches the length of `lower`}
   \item{nu}{degrees of freedom, a positive real number. If \code{NULL}, normal case is considered}
   \item{uselog2}{a boolean variable, indicating if the log2 result should be returned.
     This is useful when the true probability is too small for the machine precision}

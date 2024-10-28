@@ -84,7 +84,7 @@ onlymeanTMD = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
           stop("Degrees of freedom 'nu' must be a positive number.")
         }else{
             if(nu >= 300){
-              warning("For degrees of freedom >= 300, Normal case is considered.",immediate. = TRUE)
+              #warning("For degrees of freedom >= 300, Normal case is considered.",immediate. = TRUE)
               out = onlymeanN(lower = lower,upper = upper,mu = mu,Sigma = Sigma)
             }else{
               out = onlymeanTall(lower = lower,upper = upper,mu = mu,Sigma = Sigma,nu = nu)
@@ -102,7 +102,7 @@ onlymeanTMD = function(lower=rep(-Inf,length(mu)),upper=rep(Inf,length(mu)),mu,S
           #validate input
           if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
           if(all(lambda==0)){
-            warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
+            #warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
             out = onlymeanN(lower = lower,upper = upper,mu = mu,Sigma = Sigma)
           }
         }

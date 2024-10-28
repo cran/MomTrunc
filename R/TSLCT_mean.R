@@ -13,7 +13,7 @@ onlymeanTSLCT0 = function(lower_p,upper_p,xi,Omega,nu=NULL,dist,lower_q,upper_q)
         if(nu <= 2){stop("Sorry, we can only compute the first moment for degrees of freedom larger than 2.")
         }else{
           if(nu >= 200){
-            warning("For degrees of freedom >= 200, Normal case is considered.",immediate. = TRUE)
+            #warning("For degrees of freedom >= 200, Normal case is considered.",immediate. = TRUE)
             res = onlymeanN(lower = c(lower_q,lower_p),upper = c(upper_q,upper_p),mu = xi,Sigma = Omega)
           }else{
             if(nu < 4){

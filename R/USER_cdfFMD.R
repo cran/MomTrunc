@@ -26,7 +26,7 @@ cdfFMD = function(x,mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
           stop("Degrees of freedom 'nu' must be an integer greater than 2.")
         }else{
           if(nu >= 200){
-            warning("For degrees of freedom >= 200, Normal case is considered.",immediate. = TRUE)
+            #warning("For degrees of freedom >= 200, Normal case is considered.",immediate. = TRUE)
             out = cdfFN(x = x,mu = mu,Sigma = Sigma)
           }else{
             out = cdfFT(x = x,mu = mu,Sigma = Sigma,nu = nu)
@@ -43,7 +43,7 @@ cdfFMD = function(x,mu,Sigma,lambda = NULL,tau = NULL,dist,nu = NULL)
           #validate input
           if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
           if(all(lambda==0)){
-            warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
+            #warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
             out = cdfFN(x = x,mu = mu,Sigma = Sigma)
           }
         }

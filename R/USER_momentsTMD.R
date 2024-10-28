@@ -79,7 +79,7 @@ momentsTMD = function(kappa,lower = rep(-Inf,length(mu)),upper = rep(Inf,length(
           #validate input
           if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
           if(all(lambda==0)){
-            warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
+            #warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
             #out = KmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
             out = RcppKmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
           }
@@ -110,7 +110,7 @@ momentsTMD = function(kappa,lower = rep(-Inf,length(mu)),upper = rep(Inf,length(
             #validate input
             if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
             if(all(lambda==0)){
-              warning("Lambda = 0, T case is considered.",immediate. = TRUE)
+              #warning("Lambda = 0, T case is considered.",immediate. = TRUE)
               #out = KmomentN(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma)
               out = RcppKmomentT(k = kappa,a = lower,b = upper,mu = mu,Sigma = Sigma,nu = nu)
             }

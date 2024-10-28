@@ -10,7 +10,7 @@ rmvESN<-function(n,mu=rep(0,length(lambda)),Sigma=diag(length(lambda)),lambda,ta
     #validate input
     if(length(c(lambda)) != length(c(mu)) | !is.numeric(lambda))stop("Lambda must be numeric and have same dimension than mu.")
     if(all(lambda==0)){
-      warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
+      #warning("Lambda = 0, Normal case is considered.",immediate. = TRUE)
       out = rmvnorm(n = n,mean = mu,sigma = Sigma)
     }
   }

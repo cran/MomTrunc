@@ -2,8 +2,8 @@ Package: MomTrunc
 Type: Package
 Title: Moments of Folded and Doubly Truncated Multivariate
         Distributions
-Version: 6.0
-Date: 2022-06-15
+Version: 6.1
+Date: 2024-10-17
 Authors@R: 
   c(person(given = "Christian E.",
            family = "Galarza",
@@ -32,6 +32,6 @@ Imports: Rcpp (>= 1.0.1), mvtnorm (>= 1.0.11), tlrmvnmvt (>= 1.1.0),
 LinkingTo: Rcpp (>= 1.0.1), RcppArmadillo, mvtnorm
 Suggests: tmvtnorm
 NeedsCompilation: yes
-Packaged: 2022-06-15 18:51:55 UTC; cgala
+Packaged: 2024-10-28 21:14:51 UTC; cgala
 Repository: CRAN
-Date/Publication: 2022-06-15 23:10:05 UTC
+Date/Publication: 2024-10-28 21:40:02 UTC
